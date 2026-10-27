@@ -2,7 +2,7 @@
   "group": {
     "slug": "trading-ninjafx",
     "name": "Trading_ninjafx",
-    "description": "A Telegram channel for forex majors. It was listed as a free channel, and a paid tier was not stated. The listing also marks it as prop-firm friendly.",
+    "description": "A Telegram channel for forex majors. It was listed as a free channel, and a paid tier was not stated. The channel mentions prop firms. This site has not checked the calls against any firm's rules.",
     "markets": [
       "forex-majors"
     ],

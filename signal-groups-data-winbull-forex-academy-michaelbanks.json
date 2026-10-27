@@ -2,7 +2,7 @@
   "group": {
     "slug": "winbull-forex-academy-michaelbanks",
     "name": "WinBull Forex Academy (Michaelbanks)",
-    "description": "A Telegram channel for forex majors and indices. A free feed and a paid VIP are both listed. The VIP price was not stated. The listing also marks it as prop-firm friendly.",
+    "description": "A Telegram channel for forex majors and indices. A free feed and a paid VIP are both listed. The VIP price was not stated. The channel mentions prop firms. This site has not checked the calls against any firm's rules.",
     "markets": [
       "forex-majors",
       "indices"
