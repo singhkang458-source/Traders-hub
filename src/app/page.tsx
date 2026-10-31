@@ -10,7 +10,8 @@ import { toolPriceLabel } from "@/lib/tool-types";
 import { strategies, strategiesInDisplayOrder } from "@/lib/strategies";
 import { STRATEGY_TIER_LABELS, STRATEGY_CATEGORY_LABELS } from "@/lib/strategy-types";
 import { allAccounts } from "@/lib/propfirm-filters";
-import { BROKER_MARKET_LABELS } from "@/lib/broker-types";
+import { BROKER_CATEGORY_ITEM_LABELS } from "@/lib/broker-types";
+import { sortBrokers } from "@/lib/broker-filters";
 import FirmBadge from "@/components/FirmBadge";
 import { LinkIcon, ShieldIcon, TagIcon, UsersIcon } from "@/components/icons";
 
@@ -76,16 +77,18 @@ function coursesSnapshot(): SnapshotItem[] {
 }
 
 function brokersSnapshot(): SnapshotItem[] {
-  const ids = ["interactive-brokers", "oanda", "cmc-markets"];
-  const chosen = ids.map((id) => brokers.find((b) => b.id === id)).filter((b) => b != null);
-  const picked = chosen.length >= 3 ? chosen : [...chosen, ...brokers].slice(0, 3);
+  // CFD is the only tab with listings. Our choice (VT Markets) stays first.
+  const picked = sortBrokers(
+    brokers.filter((b) => b.category === "cfd"),
+    "name",
+  );
   return picked.map((b) => ({
     href: `/brokers/${b.id}`,
     name: b.name,
     logo: b.logo,
     logoBg: b.logoBg,
     primary: b.minDeposit != null ? `${money(b.minDeposit, b.currency)} min deposit` : null,
-    secondary: b.markets.length > 0 ? b.markets.slice(0, 2).map((m) => BROKER_MARKET_LABELS[m]).join(", ") : null,
+    secondary: b.ourChoice ? "Our choice" : BROKER_CATEGORY_ITEM_LABELS[b.category],
   }));
 }
 

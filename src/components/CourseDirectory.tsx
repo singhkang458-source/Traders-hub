@@ -80,6 +80,22 @@ function Directory({
   initialFilters: Filters;
 }) {
   const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareNote, setCompareNote] = useState("");
+
+  function toggleCompare(id: string) {
+    if (compareIds.includes(id)) {
+      setCompareIds((ids) => ids.filter((i) => i !== id));
+      setCompareNote("");
+      return;
+    }
+    if (compareIds.length >= 3) {
+      setCompareNote("You can compare up to 3 courses. Remove one to add another.");
+      return;
+    }
+    setCompareIds((ids) => [...ids, id]);
+    setCompareNote("");
+  }
 
   const entries: Entry[] = [
     ...courses.map((c) => ({
@@ -136,7 +152,7 @@ function Directory({
   const chips = activeFilterChips(filters);
 
   return (
-    <div>
+    <div className={compareIds.length > 0 ? "pb-20" : ""}>
       {/* Filter bar */}
       <form
         aria-label="Filter courses"
@@ -228,7 +244,21 @@ function Directory({
             >
               <div className="h-1 w-full bg-gradient-to-r from-gold-deep to-gold-bright" />
               <div className="flex flex-1 flex-col p-5">
-                <div className="flex items-center gap-3">
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    aria-pressed={compareIds.includes(entry.id)}
+                    onClick={() => toggleCompare(entry.id)}
+                    className={`relative z-10 inline-flex min-h-11 items-center rounded-lg border px-3 text-xs font-semibold transition-colors duration-150 ${
+                      compareIds.includes(entry.id)
+                        ? "border-accent bg-accent/12 text-foreground"
+                        : "border-border-strong text-muted hover:border-subtle hover:text-foreground"
+                    }`}
+                  >
+                    {compareIds.includes(entry.id) ? "In compare" : "Compare"}
+                  </button>
+                </div>
+                <div className="mt-3 flex items-center gap-3">
                   {entry.logo ? (
                     <div
                       className={`flex size-14 shrink-0 items-center justify-center rounded-lg p-2 ${
@@ -301,6 +331,58 @@ function Directory({
             </li>
           ))}
         </ul>
+      )}
+
+      {compareIds.length > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40">
+          <div className="container-page pb-4">
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface/95 p-3 shadow-glow backdrop-blur-md sm:p-4">
+              <span className="meta hidden sm:inline">Comparing:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                {compareIds.map((id) => {
+                  const e = entries.find((en) => en.id === id);
+                  if (!e) return null;
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-border-strong bg-surface-2 py-1 pl-3 pr-2 text-xs font-medium text-foreground"
+                    >
+                      {e.name}
+                      <button
+                        type="button"
+                        onClick={() => toggleCompare(id)}
+                        aria-label={`Remove ${e.name} from comparison`}
+                        className="text-muted hover:text-foreground"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+              {compareNote && <p role="status" className="meta w-full sm:w-auto">{compareNote}</p>}
+              <div className="ml-auto flex items-center gap-3">
+                {compareIds.length < 2 ? (
+                  <span className="meta">Pick at least 2 to compare</span>
+                ) : (
+                  <Link href={`/courses/compare?ids=${compareIds.join(",")}`} className="btn btn-primary">
+                    Compare ({compareIds.length})
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCompareIds([]);
+                    setCompareNote("");
+                  }}
+                  className="text-sm text-muted underline hover:text-foreground"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

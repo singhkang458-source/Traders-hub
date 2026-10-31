@@ -385,8 +385,7 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   .broker-card,
-  .tool-card,
-  .signal-card {
+  .tool-card {
     animation: broker-rise 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .broker-wait {
@@ -403,7 +402,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .broker-card,
   .tool-card,
-  .signal-card,
   .broker-in,
   .broker-wait {
     animation: none;
@@ -430,11 +428,10 @@ body {
   position: sticky;
   z-index: 30;
   margin-inline: -1rem;
-  padding: 0.55rem 1rem 0.65rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-background) 90%, transparent);
-  box-shadow: inset 0 -1px 0 rgb(232 197 106 / 0.16);
-  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--color-background) 92%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 @media (width >= 40rem) {
@@ -468,9 +465,25 @@ input.signal-filter-search {
 .signal-popover {
   border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
-  box-shadow:
-    inset 0 1px 0 rgb(245 215 110 / 0.28),
-    0 18px 40px -24px rgb(0 0 0 / 0.85);
+  box-shadow: 0 12px 28px -20px rgb(0 0 0 / 0.55);
+}
+
+.signal-results {
+  scroll-margin-top: 13rem;
+}
+
+@media (width >= 64rem) {
+  .signal-results {
+    scroll-margin-top: 11rem;
+  }
+}
+
+.signal-directory input[type="search"]::-webkit-search-decoration,
+.signal-directory input[type="search"]::-webkit-search-cancel-button,
+.signal-directory input[type="search"]::-webkit-search-results-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
 
 @keyframes signal-sheet-in {
@@ -618,13 +631,11 @@ input.signal-filter-search {
 
 :root[data-theme="light"] .signal-filter-bar {
   background: color-mix(in srgb, #ffffff 94%, transparent);
-  box-shadow: 0 1px 0 #ddd9d0;
+  box-shadow: none;
 }
 
 :root[data-theme="light"] .signal-popover {
-  box-shadow:
-    0 1px 2px rgb(20 20 20 / 0.06),
-    0 16px 36px -20px rgb(20 20 20 / 0.28);
+  box-shadow: 0 12px 28px -20px rgb(20 20 20 / 0.28);
 }
 
 :root[data-theme="light"] .nav-fade {
@@ -718,4 +729,58 @@ input.signal-filter-search {
   :root[data-theme="light"] .lift-card:hover {
     border-color: color-mix(in srgb, #a87a1f 55%, #ddd9d0);
   }
+}
+
+/* Strategy glossary — the hoverable/tappable definitions on technical
+   terms across the strategies section (GlossaryTerm.tsx). The tooltip
+   itself is rendered into a portal at the end of <body> (not nested
+   inside the term), positioned with `top`/`left`/`width` set inline from
+   the term's actual on-screen position — several ancestor cards on this
+   page use `overflow-hidden` for their rounded corners, which would
+   otherwise clip or bury a tooltip nested inside them regardless of its
+   z-index. */
+.glossary-term {
+  display: inline;
+  border-bottom: 1px dotted var(--color-accent);
+  color: inherit;
+  cursor: help;
+  text-decoration: none;
+}
+
+.glossary-term:hover,
+.glossary-term:focus-visible {
+  color: var(--color-accent);
+  outline: none;
+}
+
+.glossary-tooltip {
+  position: fixed;
+  z-index: 200;
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-glow);
+  pointer-events: none;
+}
+
+.glossary-tooltip-term {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.glossary-tooltip-def {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  color: var(--color-foreground);
 }
