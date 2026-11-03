@@ -4,10 +4,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import {
+  STRATEGY_CATEGORY_ICONS,
   STRATEGY_CATEGORY_LABELS,
   STRATEGY_DIFFICULTY_LABELS,
   STRATEGY_MARKET_LABELS,
   STRATEGY_TIER_LABELS,
+  type StrategyCategory,
+  type StrategyPricingTier,
   type StrategyView,
 } from "@/lib/strategy-types";
 import {
@@ -17,7 +20,21 @@ import {
   matchesFilters,
   type Filters,
 } from "@/lib/strategy-filters";
-import { ShieldIcon } from "@/components/icons";
+import { SearchIcon, ShieldIcon } from "@/components/icons";
+
+// Strategy categories in a fixed, deliberate order (not alphabetical) for
+// the quick-pick pill row — trend-following and mean-reversion first since
+// they're the two a beginner hears about most.
+const CATEGORY_ORDER: StrategyCategory[] = [
+  "trend_following",
+  "mean_reversion",
+  "breakout",
+  "price_action",
+  "momentum",
+  "volume_order_flow",
+  "market_structure",
+  "quantitative",
+];
 
 // Same filter-bar pattern as CourseDirectory/PropFirmDirectory: state saved
 // in the address so a trip into a strategy page and back keeps the filters.
@@ -61,15 +78,51 @@ function Directory({
   const marketOptions = [...new Set(strategies.flatMap((s) => s.markets))].sort((a, b) =>
     STRATEGY_MARKET_LABELS[a].localeCompare(STRATEGY_MARKET_LABELS[b]),
   );
-  const categoryOptions = [...new Set(strategies.map((s) => s.category))].sort((a, b) =>
-    STRATEGY_CATEGORY_LABELS[a].localeCompare(STRATEGY_CATEGORY_LABELS[b]),
-  );
+  const categoriesPresent = new Set(strategies.map((s) => s.category));
 
   return (
     <div>
+      {/* One-click browse by style, leading with the icons from the cards
+          below so the same visual language carries through. */}
+      <ul className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+        {CATEGORY_ORDER.filter((c) => categoriesPresent.has(c)).map((c) => {
+          const Icon = STRATEGY_CATEGORY_ICONS[c];
+          const active = filters.category === c;
+          return (
+            <li key={c} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => updateFilters({ category: active ? "" : c })}
+                aria-pressed={active}
+                className={`flex min-h-11 items-center gap-2 rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors ${
+                  active
+                    ? "border-accent bg-accent/12 text-foreground"
+                    : "border-border-strong bg-surface text-muted hover:border-subtle hover:text-foreground"
+                }`}
+              >
+                <Icon className="size-4" />
+                {STRATEGY_CATEGORY_LABELS[c]}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      <label className="mt-3 flex min-h-12 items-center gap-2.5 rounded-xl border border-border bg-surface px-3.5">
+        <SearchIcon className="size-4.5 shrink-0 text-subtle" />
+        <span className="sr-only">Search strategies by name</span>
+        <input
+          type="search"
+          value={filters.search}
+          onChange={(e) => updateFilters({ search: e.target.value })}
+          placeholder="Search by name — e.g. “RSI” or “breakout”"
+          className="min-w-0 flex-1 bg-transparent py-3 text-base text-foreground outline-none placeholder:text-subtle"
+        />
+      </label>
+
       <form
         aria-label="Filter strategies"
-        className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-5"
+        className="mt-3 grid grid-cols-1 gap-3 rounded-xl border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4"
         onSubmit={(e) => e.preventDefault()}
       >
         <Select
@@ -89,12 +142,6 @@ function Directory({
           value={filters.difficulty}
           onChange={(v) => updateFilters({ difficulty: v })}
           options={(["beginner", "intermediate", "advanced"] as const).map((d) => [d, STRATEGY_DIFFICULTY_LABELS[d]])}
-        />
-        <Select
-          label="Style"
-          value={filters.category}
-          onChange={(v) => updateFilters({ category: v })}
-          options={categoryOptions.map((c) => [c, STRATEGY_CATEGORY_LABELS[c]])}
         />
         <Select
           label="Controversial methods"
@@ -135,9 +182,12 @@ function Directory({
       </div>
 
       {matching.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center text-muted">
-          No strategies match these filters.
-        </p>
+        <div className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center">
+          <p className="text-muted">No strategies match these filters.</p>
+          <button type="button" onClick={() => updateFilters(EMPTY_FILTERS)} className="btn btn-outline mt-4">
+            Clear filters and show everything
+          </button>
+        </div>
       ) : (
         <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {matching.map((s) => (
@@ -149,15 +199,41 @@ function Directory({
   );
 }
 
+// Colours the two ends of the tier spectrum (free = nothing to lose,
+// advanced = harder, slow down) and leaves intermediate neutral — three
+// distinct hues would have clashed with the site's gold accent.
+const TIER_BADGE_CLASS: Record<StrategyPricingTier, string> = {
+  free: "badge-success",
+  intermediate: "",
+  advanced: "badge-warning",
+};
+
 function StrategyCard({ strategy: s, listingQuery }: { strategy: StrategyView; listingQuery: string }) {
   const href = listingQuery ? `/strategies/${s.slug}${listingQuery}` : `/strategies/${s.slug}`;
+  const CategoryIcon = STRATEGY_CATEGORY_ICONS[s.category];
+  const tierClass = TIER_BADGE_CLASS[s.tier];
 
   return (
-    <li className="lift-card group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
+    <li className="lift-card group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-surface">
       <div className="h-1 w-full bg-gradient-to-r from-gold-deep to-gold-bright" />
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="pill">{STRATEGY_TIER_LABELS[s.tier]}</span>
+        <div className="flex items-start gap-3">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent">
+            <CategoryIcon className="size-6" />
+          </span>
+          <div className="min-w-0 flex-1 pt-0.5">
+            <h2 className="text-lg font-semibold leading-snug">
+              <Link href={href} className="card-stretch rounded-xl">
+                {s.name}
+              </Link>
+            </h2>
+            <p className="mt-0.5 text-xs font-medium text-subtle">{STRATEGY_CATEGORY_LABELS[s.category]}</p>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          <span className={tierClass ? `badge ${tierClass}` : "pill"}>{STRATEGY_TIER_LABELS[s.tier]}</span>
+          <span className="pill">{STRATEGY_DIFFICULTY_LABELS[s.difficulty]}</span>
           {s.controversyFlag && (
             <span className="badge badge-warning inline-flex items-center gap-1">
               <ShieldIcon className="size-3" />
@@ -165,22 +241,19 @@ function StrategyCard({ strategy: s, listingQuery }: { strategy: StrategyView; l
             </span>
           )}
         </div>
-        <h2 className="mt-3 text-lg font-semibold">{s.name}</h2>
-        <p className="mt-1 text-xs font-medium uppercase tracking-wide text-subtle">
-          {STRATEGY_CATEGORY_LABELS[s.category]} · {STRATEGY_DIFFICULTY_LABELS[s.difficulty]}
-        </p>
-        <p className="mt-3 line-clamp-3 flex-1 text-sm text-muted">{s.publicTeaser}</p>
+
+        <p className="mt-3 line-clamp-2 flex-1 text-sm text-muted">{s.publicTeaser}</p>
+
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {s.markets.slice(0, 4).map((m) => (
+          {s.markets.slice(0, 3).map((m) => (
             <span key={m} className="pill text-xs">
               {STRATEGY_MARKET_LABELS[m]}
             </span>
           ))}
+          {s.markets.length > 3 && <span className="pill text-xs">+{s.markets.length - 3} more</span>}
         </div>
-        <Link
-          href={href}
-          className="btn btn-outline mt-5 w-full after:absolute after:inset-0"
-        >
+
+        <Link href={href} className="btn btn-outline relative z-10 mt-5 w-full">
           View strategy
           <span className="sr-only"> — {s.name}</span>
         </Link>
@@ -219,6 +292,7 @@ function Select({
 
 function activeFilterChips(f: Filters): { key: keyof Filters; label: string }[] {
   const chips: { key: keyof Filters; label: string }[] = [];
+  if (f.search) chips.push({ key: "search", label: `“${f.search}”` });
   if (f.tier) chips.push({ key: "tier", label: STRATEGY_TIER_LABELS[f.tier as keyof typeof STRATEGY_TIER_LABELS] });
   if (f.market) chips.push({ key: "market", label: STRATEGY_MARKET_LABELS[f.market as keyof typeof STRATEGY_MARKET_LABELS] });
   if (f.difficulty)

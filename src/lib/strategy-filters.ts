@@ -8,6 +8,7 @@
 import type { StrategyCategory, StrategyDifficulty, StrategyMarket, StrategyPricingTier, StrategyView } from "./strategy-types";
 
 export type Filters = {
+  search: string;
   tier: string;
   market: string;
   difficulty: string;
@@ -16,6 +17,7 @@ export type Filters = {
 };
 
 export const EMPTY_FILTERS: Filters = {
+  search: "",
   tier: "",
   market: "",
   difficulty: "",
@@ -25,6 +27,7 @@ export const EMPTY_FILTERS: Filters = {
 
 export function matchesFilters(s: StrategyView, f: Filters): boolean {
   return (
+    (!f.search || s.name.toLowerCase().includes(f.search.trim().toLowerCase())) &&
     (!f.tier || s.tier === (f.tier as StrategyPricingTier)) &&
     (!f.market || s.markets.includes(f.market as StrategyMarket)) &&
     (!f.difficulty || s.difficulty === (f.difficulty as StrategyDifficulty)) &&
@@ -36,6 +39,7 @@ export function matchesFilters(s: StrategyView, f: Filters): boolean {
 // ---- Filters in the web address ---------------------------------------------
 
 const QUERY_KEYS: Record<keyof Filters, string> = {
+  search: "q",
   tier: "tier",
   market: "market",
   difficulty: "level",
@@ -52,10 +56,34 @@ export function filtersToQuery(f: Filters): string {
   return qs ? `?${qs}` : "";
 }
 
+// A stale or hand-edited address — an old bookmark, a shared link from
+// before a category was renamed, a typo — could otherwise hold a value
+// that matches nothing, silently showing an empty page with no obvious way
+// out. Anything that isn't a real option for that filter is dropped back to
+// "no filter" instead.
+const VALID_VALUES: Record<string, readonly string[]> = {
+  tier: ["free", "intermediate", "advanced"],
+  difficulty: ["beginner", "intermediate", "advanced"],
+  category: [
+    "trend_following",
+    "mean_reversion",
+    "breakout",
+    "price_action",
+    "momentum",
+    "volume_order_flow",
+    "market_structure",
+    "quantitative",
+  ],
+  market: ["forex", "stocks", "crypto", "futures", "commodities", "etfs"],
+  controversial: ["hide"],
+};
+
 export function filtersFromQuery(params: { get(name: string): string | null }): Filters {
   const f = { ...EMPTY_FILTERS };
   for (const key of Object.keys(QUERY_KEYS) as (keyof Filters)[]) {
-    f[key] = params.get(QUERY_KEYS[key]) ?? "";
+    const raw = params.get(QUERY_KEYS[key]) ?? "";
+    const valid = VALID_VALUES[key];
+    f[key] = valid && raw && !valid.includes(raw) ? "" : raw;
   }
   return f;
 }

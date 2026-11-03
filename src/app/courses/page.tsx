@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import CourseDirectory from "@/components/CourseDirectory";
 import { courses } from "@/lib/courses";
 import { providers } from "@/lib/providers";
+import { parsePrice } from "@/lib/course-filters";
 import { getSection } from "@/lib/sections";
+import TerminalStatPanel from "@/components/TerminalStatPanel";
+import IconPatternBackdrop from "@/components/IconPatternBackdrop";
+import { BookIcon, CheckIcon, StarIcon } from "@/components/icons";
 
 const section = getSection("courses");
 
@@ -12,19 +17,53 @@ export const metadata: Metadata = {
 };
 
 export default function CoursesPage() {
+  const freeTierCount = courses.filter((c) => c.pricing.some((p) => parsePrice(p.price) === 0)).length;
+  const ratedCount = courses.filter((c) => c.trustpilot || c.whop).length;
+
   return (
     <>
-      <h1 className="title-rule page-title">{section.title}</h1>
-      <p className="mt-3 text-lg text-muted">
-        Compare trading courses side by side: what they cover, how they&apos;re delivered, pricing
-        and independent Trustpilot ratings.
-      </p>
-      <p className="meta mt-3 max-w-2xl">
-        We don&apos;t verify trading performance or results — see each course&apos;s page for
-        where its testimonials and ratings come from.
-      </p>
+      <section className="grid grid-cols-1 gap-8 py-8 sm:py-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-8">
+        <div>
+          <p className="eyebrow">{section.title}</p>
+          <h1 className="page-title mt-2 text-[clamp(2rem,5vw,3rem)] leading-[1.05]">
+            Find a course that{" "}
+            <span className="brand-wordmark" style={{ fontFamily: "var(--font-heading)" }}>
+              actually fits
+            </span>{" "}
+            how you trade
+          </h1>
+          <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">
+            What each course covers, how it&apos;s delivered and what it costs — plus independent
+            Trustpilot ratings, not just the provider&apos;s own claims. We don&apos;t verify
+            trading performance or results.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <a href="#browse" className="btn btn-primary">
+              <BookIcon className="size-4" />
+              Browse all courses
+            </a>
+            <Link href="/strategies" className="btn btn-outline">
+              Prefer to learn for free? Try a strategy
+            </Link>
+          </div>
+        </div>
 
-      <CourseDirectory courses={courses} providers={providers} />
+        <TerminalStatPanel
+          caption="The directory, at a glance"
+          backdrop={<IconPatternBackdrop icons={[BookIcon, StarIcon, CheckIcon]} />}
+          stats={[
+            { label: "Courses & providers", value: courses.length + providers.length },
+            { label: "With a free tier", value: freeTierCount },
+            { label: "Independently rated", value: ratedCount },
+            { label: "Performance scores shown", value: 0 },
+          ]}
+          footnote="Ratings come from Trustpilot or Whop, sourced and linked on every course page — never our own score."
+        />
+      </section>
+
+      <div id="browse" className="mt-6 scroll-mt-20 border-t border-border pt-10">
+        <CourseDirectory courses={courses} providers={providers} />
+      </div>
     </>
   );
 }
