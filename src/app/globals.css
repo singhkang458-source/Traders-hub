@@ -383,10 +383,155 @@ body {
   color: var(--color-accent);
 }
 
+.our-choice-prominent {
+  gap: 0.35rem;
+  border-color: var(--color-gold);
+  background: color-mix(in srgb, var(--color-gold-fill) 32%, var(--color-surface));
+  padding: 0.28rem 0.7rem 0.28rem 0.48rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-gold) 28%, transparent);
+}
+
+.our-choice-prominent .our-choice-mark {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--color-gold-bright);
+}
+
+/* One sweep of gold around the Our choice card, then a still edge.
+   The ring clips the spinning light. The shell keeps the settled glow,
+   which overflow would otherwise cut off. */
+.choice-shell {
+  border-radius: 1rem;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.choice-ring {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--color-border);
+}
+
+.choice-shell.is-running {
+  box-shadow: 0 0 22px -8px color-mix(in srgb, var(--color-gold-bright) 85%, transparent);
+}
+
+.choice-shell.is-settled {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-gold) 28%, transparent),
+    0 12px 28px -18px color-mix(in srgb, var(--color-gold) 70%, transparent);
+}
+
+.choice-shell.is-settled .choice-ring {
+  background: color-mix(in srgb, var(--color-gold) 62%, var(--color-border));
+}
+
+.choice-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    color-mix(in srgb, var(--color-gold) 40%, transparent) 300deg,
+    var(--color-gold) 332deg,
+    var(--color-gold-bright) 348deg,
+    #fff8dc 356deg,
+    #fff 360deg
+  );
+  animation: choice-beam-spin 2s linear 1 forwards;
+}
+
+@keyframes choice-beam-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.card-stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.broker-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+.broker-tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-foreground);
+  pointer-events: none;
+}
+
+.broker-panel {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .broker-panel:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 16px 32px -24px rgb(0 0 0 / 0.55);
+  }
+  .choice-shell:hover {
+    transform: translateY(-2px);
+  }
+  .choice-shell:hover .broker-panel {
+    transform: none;
+    box-shadow: none;
+  }
+  .broker-tab-indicator {
+    transition:
+      left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .broker-panel,
+  .broker-tab-indicator,
+  .choice-shell,
+  .choice-beam {
+    transition: none;
+    animation: none;
+  }
+  .choice-shell {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-gold) 28%, transparent),
+      0 12px 28px -18px color-mix(in srgb, var(--color-gold) 70%, transparent);
+  }
+  .choice-ring {
+    background: color-mix(in srgb, var(--color-gold) 62%, var(--color-border));
+  }
+  .choice-beam {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .broker-card,
-  .tool-card,
-  .signal-card {
+  .tool-card {
     animation: broker-rise 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .broker-wait {
@@ -403,7 +548,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .broker-card,
   .tool-card,
-  .signal-card,
   .broker-in,
   .broker-wait {
     animation: none;
@@ -418,10 +562,12 @@ body {
 /* ---- Tradox chrome ------------------------------------------------------- */
 
 .site-header {
-  background: color-mix(in srgb, var(--color-background) 86%, transparent);
+  /* Near-solid, no backdrop blur: a blurred sticky header re-composites on
+     every scroll frame, which is the single most expensive thing a header
+     can do on a phone. 97% opacity keeps a hint of depth for free. */
+  background: color-mix(in srgb, var(--color-background) 97%, transparent);
   border-bottom: 1px solid var(--color-border);
   box-shadow: inset 0 -1px 0 rgb(232 197 106 / 0.22);
-  backdrop-filter: blur(16px);
 }
 
 /* Signal Groups filter bar. Sits under the sticky header. The negative
@@ -430,11 +576,9 @@ body {
   position: sticky;
   z-index: 30;
   margin-inline: -1rem;
-  padding: 0.55rem 1rem 0.65rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-background) 90%, transparent);
-  box-shadow: inset 0 -1px 0 rgb(232 197 106 / 0.16);
-  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--color-background) 92%, transparent);
 }
 
 @media (width >= 40rem) {
@@ -468,9 +612,25 @@ input.signal-filter-search {
 .signal-popover {
   border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
-  box-shadow:
-    inset 0 1px 0 rgb(245 215 110 / 0.28),
-    0 18px 40px -24px rgb(0 0 0 / 0.85);
+  box-shadow: 0 12px 28px -20px rgb(0 0 0 / 0.55);
+}
+
+.signal-results {
+  scroll-margin-top: 13rem;
+}
+
+@media (width >= 64rem) {
+  .signal-results {
+    scroll-margin-top: 11rem;
+  }
+}
+
+.signal-directory input[type="search"]::-webkit-search-decoration,
+.signal-directory input[type="search"]::-webkit-search-cancel-button,
+.signal-directory input[type="search"]::-webkit-search-results-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
 
 @keyframes signal-sheet-in {
@@ -566,6 +726,27 @@ input.signal-filter-search {
   }
 }
 
+/* CountUpStat's entrance — see the long comment in that component for why
+   this has to be an animation added by a class, not a persistent opacity
+   state: the element must be fully visible by default (no JS, or before
+   this class is added) and only gets the blur-in treatment as a bonus. */
+@keyframes stat-settle-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateY(0.12em);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+.stat-settle-in {
+  animation: stat-settle-in 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* A quiet hover: the border picks up a trace of gold and the card sits a
    hair above the page. No lift-and-glow halo — that read as the same
    trick on every card on every page, rather than something that stood
@@ -581,6 +762,13 @@ input.signal-filter-search {
 @media (hover: hover) and (prefers-reduced-motion: reduce) {
   .lift-card:hover {
     border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-border));
+  }
+}
+
+@media (hover: hover) and (width >= 64rem) {
+  .signal-row.lift-card:hover {
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -612,19 +800,17 @@ input.signal-filter-search {
 }
 
 :root[data-theme="light"] .site-header {
-  background: color-mix(in srgb, #ffffff 92%, transparent);
+  background: color-mix(in srgb, #ffffff 97%, transparent);
   box-shadow: 0 1px 0 #ddd9d0, 0 10px 24px -20px rgb(20 20 20 / 0.28);
 }
 
 :root[data-theme="light"] .signal-filter-bar {
   background: color-mix(in srgb, #ffffff 94%, transparent);
-  box-shadow: 0 1px 0 #ddd9d0;
+  box-shadow: none;
 }
 
 :root[data-theme="light"] .signal-popover {
-  box-shadow:
-    0 1px 2px rgb(20 20 20 / 0.06),
-    0 16px 36px -20px rgb(20 20 20 / 0.28);
+  box-shadow: 0 12px 28px -20px rgb(20 20 20 / 0.28);
 }
 
 :root[data-theme="light"] .nav-fade {
@@ -696,6 +882,27 @@ input.signal-filter-search {
   color: #a87a1f;
 }
 
+:root[data-theme="light"] .our-choice-prominent {
+  border-color: #a87a1f;
+  background: #fff6e4;
+  color: #5c3e0c;
+  box-shadow: 0 0 0 1px rgb(168 122 31 / 0.28);
+}
+
+:root[data-theme="light"] .our-choice-prominent .our-choice-mark {
+  color: #8f6716;
+}
+
+:root[data-theme="light"] .choice-shell.is-settled {
+  box-shadow:
+    0 0 0 1px rgb(168 122 31 / 0.35),
+    0 10px 24px -16px rgb(143 103 22 / 0.45);
+}
+
+:root[data-theme="light"] .choice-shell.is-settled .choice-ring {
+  background: #c4922a;
+}
+
 /* Secondary line on a bronze fill. 75% white is 3.6:1; 92% clears AA. */
 :root[data-theme="light"] :is(.text-gold-ink\/75, .text-gold-ink\/80) {
   color: rgb(255 255 255 / 0.92);
@@ -717,5 +924,2164 @@ input.signal-filter-search {
 @media (hover: hover) and (prefers-reduced-motion: reduce) {
   :root[data-theme="light"] .lift-card:hover {
     border-color: color-mix(in srgb, #a87a1f 55%, #ddd9d0);
+  }
+}
+
+/* Strategy glossary — the hoverable/tappable definitions on technical
+   terms across the strategies section (GlossaryTerm.tsx). The tooltip
+   itself is rendered into a portal at the end of <body> (not nested
+   inside the term), positioned with `top`/`left`/`width` set inline from
+   the term's actual on-screen position — several ancestor cards on this
+   page use `overflow-hidden` for their rounded corners, which would
+   otherwise clip or bury a tooltip nested inside them regardless of its
+   z-index. */
+.glossary-term {
+  display: inline;
+  border-bottom: 1px dotted var(--color-accent);
+  color: inherit;
+  cursor: help;
+  text-decoration: none;
+}
+
+.glossary-term:hover,
+.glossary-term:focus-visible {
+  color: var(--color-accent);
+  outline: none;
+}
+
+.glossary-tooltip {
+  position: fixed;
+  z-index: 200;
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-glow);
+  pointer-events: none;
+}
+
+.glossary-tooltip-term {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.glossary-tooltip-def {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  color: var(--color-foreground);
+}
+
+/* Homepage hero's decorative background chart line — draws itself in once
+   on load. Purely cosmetic (aria-hidden), never presented as real data. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-chart-deco path {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: hero-chart-draw 1800ms cubic-bezier(0.22, 1, 0.36, 1) 150ms forwards;
+  }
+}
+
+@keyframes hero-chart-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Scroll-reveal (ScrollReveal.tsx) — sections fade/slide into place the
+   first time they cross into view, instead of all appearing at once. */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+  }
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  /* Browsers with scroll-driven animations: the reveal is tied to the
+     element's own position in the viewport and runs on the compositor —
+     no observer, no JS. The JS fallback above still applies elsewhere. */
+  @supports (animation-timeline: view()) {
+    .scroll-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Terminal-style stat panel (TerminalStatPanel.tsx) — a faint graph-paper
+   texture so it reads as a data readout, not just another bordered card. */
+.terminal-panel {
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-gold) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--color-gold) 7%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+}
+
+/* Big gradient brand wordmark in the homepage hero. */
+.brand-wordmark {
+  background-image: linear-gradient(100deg, var(--color-gold-deep), var(--color-gold-bright) 55%, var(--color-gold) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Cursor-aware gold spotlight on the "Everything we offer" rows
+   (SpotlightRow.tsx) — a radial gradient whose centre follows --spot-x/
+   --spot-y, set by a pointermove listener. Pure decoration, so it's
+   skipped entirely for reduced-motion (a plain hover border still applies,
+   set in SpotlightRow's own hover: class). */
+.spotlight-glow {
+  background: radial-gradient(
+    480px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--color-gold) 14%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-glow {
+    display: none;
+  }
+}
+
+/* The same rows tilt a few degrees toward the pointer (SpotlightRow.tsx
+   sets --tilt-x/--tilt-y). transform only; mouse + motion-safe only. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .spotlight-row {
+    transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition:
+      transform 260ms var(--ease-out),
+      border-color 300ms ease;
+  }
+}
+
+/* The Strategies row's small candle+MA preview (MiniCandlePreview.tsx) —
+   the gold moving-average line gently redraws itself on a loop. 300 is a
+   fixed, slightly-generous estimate of MA_PATH's real length in px (the
+   actual path is ~290px) — a CSS stroke-dasharray doesn't respect the
+   SVG pathLength attribute reliably across browsers, so this uses real
+   pixels instead of that normalization trick. */
+@keyframes ma-preview-draw {
+  0%,
+  8% {
+    stroke-dashoffset: 300;
+  }
+  55%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ma-preview-line {
+    stroke-dasharray: 300;
+    animation: ma-preview-draw 4.5s ease-in-out infinite;
+  }
+}
+
+/* ---- Site-wide search (SiteSearch.tsx) ----------------------------------
+   The panel drops in from slightly above and the overlay fades; both are
+   short and both stop entirely under prefers-reduced-motion. */
+@keyframes search-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .search-overlay {
+    animation: overlay-in 160ms ease-out;
+  }
+  .search-panel {
+    animation: search-panel-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+:root[data-theme="light"] .search-overlay {
+  background: rgb(237 235 230 / 0.7);
+}
+
+/* Loading placeholder blocks — a soft shimmer across a surface-2 bar.
+   Used by loading.tsx skeletons and anything that waits on the browser. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--color-foreground) 6%, transparent),
+      transparent
+    );
+    animation: skeleton-sweep 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ---- Compare tables -------------------------------------------------------
+   Columns slide in as they're added; the copy button flashes green once
+   something has been copied. Both stop under reduced motion. */
+@keyframes compare-col-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .compare-col {
+    animation: compare-col-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+.copy-button.is-copied {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+/* Fixed-to-bottom action bars (compare tray, sticky visit bar) need to
+   sit above the mobile bottom nav when there is one. */
+.tray-bottom {
+  bottom: var(--bottom-nav-height, 0px);
+}
+
+/* ---- Find my firm (FirmMatcher.tsx) --------------------------------------
+   Each question card slides in; result cards stagger in via animationDelay
+   set inline. Nothing moves under reduced motion. */
+@keyframes matcher-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .matcher-step {
+    animation: matcher-step-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .match-card {
+    animation: matcher-step-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .matcher-bar {
+    transition: background-color 300ms ease;
+  }
+}
+
+/* ---- Deals (DealsList.tsx) --------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .deal-card {
+    animation: matcher-step-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* Light bronze is too dark for the dashed code box in light mode; keep the
+   code itself readable on the pale tint. */
+:root[data-theme="light"] .deal-code {
+  color: #734f10;
+}
+
+/* ---- Cost calculator / drawdown chart / rules-in-money ------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .cost-bar {
+    transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cost-total {
+    animation: stat-settle-in 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .dd-equity {
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+    animation: hero-chart-draw 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .dd-floor {
+    transition: d 300ms ease;
+  }
+  .rules-money-card {
+    animation: matcher-step-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* ---- Start here path ------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .path-progress {
+    transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* ---- Account menu ---------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .profile-menu {
+    animation: search-panel-in 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* ---- Save button ---------------------------------------------------------- */
+@keyframes save-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .save-button.is-pop {
+    animation: save-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+/* ---- Mobile bottom nav + page transitions ----------------------------- */
+:root {
+  --bottom-nav-height: 0px;
+}
+
+@media (width < 48rem) {
+  :root {
+    --bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* Leave room so the footer's last lines and any bottom tray clear the bar. */
+  .site-footer {
+    padding-bottom: var(--bottom-nav-height);
+  }
+}
+
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background) 97%, transparent);
+  box-shadow: inset 0 1px 0 rgb(232 197 106 / 0.18);
+}
+
+:root[data-theme="light"] .bottom-nav {
+  background: color-mix(in srgb, #ffffff 97%, transparent);
+  box-shadow: 0 -1px 0 #ddd9d0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bottom-nav-icon {
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+  .bottom-nav a:active .bottom-nav-icon,
+  .bottom-nav button:active .bottom-nav-icon {
+    transform: scale(0.92);
+  }
+}
+
+/* ==========================================================================
+   Design tokens (DESIGN.md → Tokens). Spacing, radius, shadow and motion
+   live here as variables so new components use the same scale instead of
+   one-off values. Colours are defined at the top of this file.
+   ========================================================================== */
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius-sm: 0.5rem; /* inputs, small chips */
+  --radius-md: 0.75rem; /* cards, buttons */
+  --radius-lg: 1rem; /* feature rows, panels */
+  --radius-xl: 1.5rem; /* hero search, dialogs */
+  --radius-pill: 9999px;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.25);
+  --shadow-2: 0 6px 16px -12px rgb(0 0 0 / 0.45);
+  --shadow-3: 0 16px 40px -22px rgb(0 0 0 / 0.6);
+  /* --shadow-glow-color is the gold halo, defined per theme at the top. */
+
+  --dur-fast: 150ms; /* hover colour, pressed state */
+  --dur-base: 240ms; /* panels, menus, page cross-fade */
+  --dur-slow: 620ms; /* scroll reveals, hero entrances */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* decelerate — everything that enters */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* a small overshoot — confirmations only */
+}
+
+/* ---- Aurora hero (AuroraHero.tsx) ----------------------------------------
+   Three large radial-gradient blobs drift on `transform` only; a grid and a
+   self-drawing price line sit under the copy. The section gets
+   .is-offscreen once scrolled past, which pauses the drift so nothing
+   animates off-screen. Reduced motion: same picture, perfectly still. */
+.aurora-hero {
+  margin-top: -2.5rem; /* cancels main's py-10 so the hero meets the header */
+  --aurora-a: color-mix(in srgb, var(--color-gold) 55%, transparent);
+  --aurora-b: color-mix(in srgb, #2fb7a6 40%, transparent); /* the one cool accent, decoration only */
+  --aurora-c: color-mix(in srgb, var(--color-gold-deep) 60%, transparent);
+  background: var(--color-background);
+  isolation: isolate;
+}
+
+@media (width >= 40rem) {
+  .aurora-hero {
+    margin-top: -3.5rem; /* main's sm:py-14 */
+  }
+}
+
+.aurora-layer {
+  overflow: hidden;
+  contain: strict;
+}
+
+.aurora-blob {
+  position: absolute;
+  width: 52vmax;
+  height: 52vmax;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.aurora-blob-a {
+  top: -30vmax;
+  left: -15vmax;
+  background: radial-gradient(circle at center, var(--aurora-a), transparent 62%);
+}
+
+.aurora-blob-b {
+  top: -20vmax;
+  right: -25vmax;
+  background: radial-gradient(circle at center, var(--aurora-b), transparent 60%);
+  opacity: 0.42;
+}
+
+.aurora-blob-c {
+  bottom: -35vmax;
+  left: 20vmax;
+  background: radial-gradient(circle at center, var(--aurora-c), transparent 64%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .aurora-blob-a {
+    animation: aurora-drift-a 22s ease-in-out infinite alternate;
+  }
+  .aurora-blob-b {
+    animation: aurora-drift-b 26s ease-in-out infinite alternate;
+  }
+  .aurora-blob-c {
+    animation: aurora-drift-c 30s ease-in-out infinite alternate;
+  }
+  .aurora-hero.is-offscreen .aurora-blob {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes aurora-drift-a {
+  to {
+    transform: translate3d(12vmax, 8vmax, 0) scale(1.08);
+  }
+}
+@keyframes aurora-drift-b {
+  to {
+    transform: translate3d(-10vmax, 10vmax, 0) scale(1.12);
+  }
+}
+@keyframes aurora-drift-c {
+  to {
+    transform: translate3d(-14vmax, -8vmax, 0) scale(1.05);
+  }
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-gold) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--color-gold) 10%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
+}
+
+.hero-fade {
+  background: linear-gradient(to top, var(--color-background), transparent);
+}
+
+.hero-line {
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: hero-line-draw 1600ms var(--ease-out) 200ms forwards;
+  }
+  .hero-line-area {
+    opacity: 0;
+    animation: hero-line-fill 900ms ease-out 1300ms forwards;
+  }
+  .hero-line-dot {
+    opacity: 0;
+    transform-origin: 1200px 60px;
+    animation: hero-dot-in 500ms var(--ease-spring) 1700ms forwards;
+  }
+}
+
+@keyframes hero-line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hero-line-fill {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hero-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Word-by-word headline. Words start at 35% opacity (so the text is
+   painted — and counts as rendered — on the first frame) and rise into
+   place with a 70ms stagger set per word via --i in WordReveal. */
+.hero-word {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word {
+    opacity: 0.35;
+    transform: translateY(0.3em);
+    animation: hero-word-in 640ms var(--ease-out) forwards;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+
+@keyframes hero-word-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero search box: the cycling example text cross-fades (opacity only);
+   the box itself lifts 1px on hover. */
+.hero-search-example {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+/* The incoming line waits for the outgoing one to finish fading, so the
+   two never overlap. */
+.hero-search-example.is-on {
+  position: relative;
+  opacity: 1;
+  transition-delay: 240ms;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hero-search:hover {
+    transform: translateY(-1px);
+  }
+}
+
+:root[data-theme="light"] .aurora-hero {
+  --aurora-a: color-mix(in srgb, #c9972a 38%, transparent);
+  --aurora-b: color-mix(in srgb, #2fb7a6 22%, transparent);
+  --aurora-c: color-mix(in srgb, #a87a1f 30%, transparent);
+}
+
+:root[data-theme="light"] .hero-grid {
+  background-image:
+    linear-gradient(90deg, rgb(168 122 31 / 0.12) 1px, transparent 1px),
+    linear-gradient(rgb(168 122 31 / 0.12) 1px, transparent 1px);
+}
+
+/* ---- Page cross-fade (React <ViewTransition default="page"> in layout.tsx)
+   Old page fades out, new one fades in and rises 6px. The sticky header is
+   named so it stays put instead of fading with the page. Reduced motion:
+   instant swap. */
+::view-transition-group(*) {
+  animation-duration: var(--dur-base);
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-old(.page) {
+  animation: vt-fade-out var(--dur-fast) ease-in both;
+}
+
+::view-transition-new(.page) {
+  animation: vt-fade-in var(--dur-base) var(--ease-out) both;
+}
+
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Below-the-fold sections skip style, layout and paint until they're near
+   the viewport. The intrinsic size keeps the scrollbar honest (CLS 0). */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 560px;
+}
+
+/* ---- Compare page (PropFirmCompare.tsx) -------------------------------------- */
+.compare-scroll {
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.compare-table .compare-col {
+  min-width: 15rem;
+  scroll-snap-align: start;
+}
+
+@media (width >= 40rem) {
+  .compare-table .compare-col {
+    min-width: 17rem;
+  }
+}
+
+.compare-label-col {
+  width: 7rem;
+  min-width: 7rem;
+}
+
+@media (width >= 40rem) {
+  .compare-label-col {
+    width: 9rem;
+    min-width: 9rem;
+  }
+}
+
+.compare-same {
+  color: var(--color-muted);
+}
+
+.compare-group th {
+  border-top: 1px solid var(--color-border);
+}
+
+/* The summary strip sits just under the site header; it slides in on
+   transform/opacity only. */
+.compare-summary {
+  position: fixed;
+  inset-inline: 0;
+  top: var(--header-height, 4.25rem);
+  z-index: 35;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background) 97%, transparent);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.compare-summary.is-shown {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .compare-summary {
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .rule-bar {
+    transition: transform 400ms var(--ease-out);
+  }
+  .compare-col {
+    animation: compare-col-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* ==========================================================================
+   Site-wide chrome for the Aurora Terminal direction (DESIGN.md → Shared
+   chrome). Static — nothing here animates except on interaction.
+   ========================================================================== */
+
+/* The calm gold wash behind every PageIntro. */
+.page-glow {
+  background:
+    radial-gradient(60% 100% at 20% 0%, color-mix(in srgb, var(--color-gold) 16%, transparent), transparent 70%),
+    radial-gradient(40% 80% at 90% 10%, color-mix(in srgb, #2fb7a6 8%, transparent), transparent 70%);
+  mask-image: linear-gradient(to bottom, black, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+:root[data-theme="light"] .page-glow {
+  background:
+    radial-gradient(60% 100% at 20% 0%, rgb(168 122 31 / 0.14), transparent 70%),
+    radial-gradient(40% 80% at 90% 10%, rgb(47 183 166 / 0.08), transparent 70%);
+}
+
+/* Detail heroes pick up the terminal grid texture so firm/course/strategy
+   pages share the homepage's data-readout feel. */
+.detail-hero {
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-gold) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--color-gold) 6%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-position: -1px -1px;
+}
+
+/* Buttons press down a hair; cards and chips keep their existing hover. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .btn:active {
+    transform: scale(0.985);
+  }
+  .btn {
+    transition:
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease,
+      color var(--dur-fast) ease,
+      box-shadow var(--dur-fast) ease,
+      transform var(--dur-fast) ease;
+  }
+}
+
+/* Sticky filter bars: no backdrop blur (same rule as the header). */
+.signal-filter-bar {
+  backdrop-filter: none;
+  background: color-mix(in srgb, var(--color-background) 97%, transparent);
+}
+
+:root[data-theme="light"] .signal-filter-bar {
+  background: color-mix(in srgb, #ffffff 97%, transparent);
+}
+
+/* Section headings on directory pages get the same short gold rule as
+   page titles, so a page reads as one system top to bottom. */
+.section-rule::after {
+  content: "";
+  display: block;
+  width: 2rem;
+  height: 2px;
+  margin-top: 0.6rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-gold-fill), transparent);
+}
+
+/* ==========================================================================
+   Interior kit — the shared look of every page below the homepage
+   (DESIGN.md → "Interior kit"). Plain classes, so don't put a Tailwind
+   utility for the same property on the same element.
+   ========================================================================== */
+
+/* A lit panel: a hair of gold on the top edge and a soft fall-off, so a
+   card reads as a surface under a light rather than a flat box. */
+.kit-panel {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 4%, var(--color-surface)), var(--color-surface) 7rem);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-gold-bright) 16%, transparent);
+}
+
+:root[data-theme="light"] .kit-panel {
+  background: var(--color-surface);
+  box-shadow:
+    0 1px 2px rgb(20 20 20 / 0.04),
+    0 10px 24px -20px rgb(20 20 20 / 0.25);
+}
+
+/* Listing cards: a gold hairline across the top that brightens on hover
+   or when something inside has focus. Opacity only. */
+.listing-card {
+  overflow: clip;
+}
+
+.listing-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-fill) 30%, var(--color-gold-bright) 60%, transparent);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .listing-card:hover::before {
+    opacity: 1;
+  }
+}
+
+.listing-card:focus-within::before,
+.listing-card.is-selected::before {
+  opacity: 1;
+}
+
+.listing-card.is-selected {
+  border-color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .listing-card::before {
+    transition: opacity var(--dur-base) ease;
+  }
+}
+
+/* Mono caption, as on the homepage stat panel: "STEP 1", "FILTERS". */
+.readout {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+/* A row of facts inside a card: hairline-separated cells, mono figures. */
+.stat-strip {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-border);
+}
+
+.stat-cell {
+  min-width: 0;
+  padding: 0.625rem 0.75rem;
+  background: color-mix(in srgb, var(--color-background) 55%, var(--color-surface));
+}
+
+:root[data-theme="light"] .stat-cell {
+  background: color-mix(in srgb, var(--color-background) 45%, var(--color-surface));
+}
+
+.stat-value {
+  display: block;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-foreground);
+}
+
+/* Segmented control: 2–4 mutually exclusive views (All / Forex / Futures). */
+.seg {
+  display: inline-flex;
+  max-width: 100%;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  background: var(--color-surface);
+  scrollbar-width: none;
+}
+
+.seg-btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+
+.seg-btn:hover {
+  color: var(--color-foreground);
+}
+
+.seg-btn[aria-pressed="true"],
+.seg-btn[aria-current="page"],
+.seg-btn[aria-selected="true"] {
+  background: color-mix(in srgb, var(--color-gold-fill) 16%, transparent);
+  color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-gold-fill) 45%, transparent);
+}
+
+.seg-count {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+/* A labelled on/off switch drawn as a pill ("Only show differences"). */
+.seg-toggle {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.seg-toggle.is-on {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-gold-fill) 12%, transparent);
+  color: var(--color-foreground);
+}
+
+/* Section heading icon chip. */
+.icon-chip {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-gold-fill) 14%, transparent);
+  color: var(--color-accent);
+}
+
+/* ---- Compare v2 (PropFirmCompare.tsx) ------------------------------------
+   One grid that always fits the screen. Phones: the row label takes its
+   own line and the values sit in equal columns under it. From 48rem the
+   label becomes a fixed first column. */
+.cmp-plans {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.cmp-table {
+  overflow: clip; /* clip, not hidden: keeps the sticky header row working */
+}
+
+.cmp-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+}
+
+/* Phones: visually hidden but still a column header, so the header row
+   has the same number of columns as the data rows for screen readers.
+   Absolutely positioned items take no grid slot. */
+.cmp-corner {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.cmp-label {
+  grid-column: 1 / -1;
+  padding: 0.75rem 0.875rem 0.25rem;
+}
+
+.cmp-cell {
+  padding: 0.625rem 0.875rem 0.875rem;
+}
+
+.cmp-cell + .cmp-cell {
+  border-left: 1px solid var(--color-border);
+}
+
+.cmp-head {
+  position: sticky;
+  top: var(--cmp-sticky-top, 6.75rem);
+  z-index: 20;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 1rem 1rem 0 0;
+  background: var(--color-surface-2);
+}
+
+.cmp-head .cmp-cell {
+  padding-block: 0.75rem;
+}
+
+.cmp-group-title {
+  display: block;
+  padding: 1.25rem 0.875rem 0.5rem;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.cmp-head + .cmp-group .cmp-group-title {
+  border-top: 0;
+}
+
+.cmp-data-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.cmp-data-row.is-highlight {
+  background: color-mix(in srgb, var(--color-gold-fill) 6%, transparent);
+}
+
+@media (hover: hover) {
+  .cmp-data-row:hover {
+    background: color-mix(in srgb, var(--color-surface-2) 70%, transparent);
+  }
+}
+
+.cmp-num {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  line-height: 1.2;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cmp-same-tag {
+  border-radius: 9999px;
+  border: 1px solid var(--color-border-strong);
+  padding: 0 0.5rem;
+  font-size: 0.6875rem;
+  line-height: 1.25rem;
+  color: var(--color-subtle);
+}
+
+.cmp-bar {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.cmp-bar > div {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.cmp-bar-loss {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-danger) 55%, transparent), var(--color-danger));
+}
+
+.cmp-bar-target {
+  background: linear-gradient(90deg, var(--color-gold-deep), var(--color-gold-bright));
+}
+
+@media (width >= 40rem) {
+  .cmp-head {
+    top: var(--cmp-sticky-top, 4.5rem);
+  }
+}
+
+@media (width >= 48rem) {
+  .cmp {
+    --cmp-label: 13.5rem;
+  }
+  .cmp-plans {
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    padding-left: var(--cmp-label);
+  }
+  .cmp-row {
+    grid-template-columns: var(--cmp-label) repeat(var(--cols), minmax(0, 1fr));
+  }
+  .cmp-corner {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.125rem;
+  }
+  .cmp-label {
+    grid-column: auto;
+    padding: 1rem 1.125rem;
+  }
+  .cmp-cell {
+    padding: 1rem 1.125rem;
+    border-left: 1px solid var(--color-border);
+  }
+  .cmp-group-title {
+    padding-inline: 1.125rem;
+  }
+  .cmp-num {
+    font-size: 1.25rem;
+  }
+}
+
+/* A quieter call to action for cards that repeat down a grid: gold tint at
+   rest, full gold on hover. Keeps btn-primary for the one main action. */
+.btn-soft {
+  border-color: color-mix(in srgb, var(--color-gold-fill) 40%, transparent);
+  background: color-mix(in srgb, var(--color-gold-fill) 13%, transparent);
+  color: var(--color-accent);
+}
+
+@media (hover: hover) {
+  .btn-soft:hover {
+    border-color: var(--color-gold-fill);
+    background: var(--color-gold-fill);
+    color: var(--color-gold-ink);
+  }
+}
+
+/* The compare header sticks flush under the site header. */
+.cmp-head {
+  border-radius: 0;
+  top: var(--cmp-sticky-top, 6.9rem);
+}
+
+@media (width >= 40rem) {
+  .cmp-head {
+    top: var(--cmp-sticky-top, 4.375rem);
+  }
+}
+
+/* Every existing hover card picks up the lit top edge of the kit, so the
+   sections that haven't been rebuilt card-by-card still match. */
+.lift-card.bg-surface {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 4%, transparent), transparent 7rem);
+}
+
+.lift-card.bg-surface:not(:hover) {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-gold-bright) 14%, transparent);
+}
+
+:root[data-theme="light"] .lift-card.bg-surface {
+  background-image: none;
+}
+
+:root[data-theme="light"] .lift-card.bg-surface:not(:hover) {
+  box-shadow: 0 1px 2px rgb(20 20 20 / 0.04);
+}
+
+/* A row in a "Next steps" panel (firm page). */
+.firm-step {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.firm-step:hover {
+  background: var(--color-surface-2);
+}
+
+@media (width < 40rem) {
+  .stat-cell {
+    padding: 0.5rem 0.625rem;
+  }
+  .stat-value {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ==========================================================================
+   Picker (Picker.tsx) — the site's one dropdown. Closed it matches the
+   homepage search box; open it is a raised card (desktop) or a bottom
+   sheet (phones). Fade + slide on transform/opacity only; no blur.
+   ========================================================================== */
+.picker {
+  min-width: 0;
+}
+
+.picker-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 26%, var(--color-border-strong));
+  border-radius: 0.625rem;
+  background: var(--color-background);
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color: var(--color-foreground);
+}
+
+@media (width >= 40rem) {
+  .picker-trigger {
+    font-size: 0.875rem;
+  }
+}
+
+.picker-trigger-search {
+  min-height: 3.25rem;
+  gap: 0.75rem;
+  padding-inline: 1rem;
+  border-radius: 0.875rem;
+  background: var(--color-surface);
+  font-size: 1rem;
+}
+
+.picker-trigger:hover {
+  border-color: color-mix(in srgb, var(--color-gold) 55%, var(--color-border-strong));
+}
+
+.picker-trigger:focus-visible,
+.picker-trigger.is-open {
+  outline: none;
+  border-color: var(--color-gold-fill);
+  /* A static ring, not an animated shadow. */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold-fill) 24%, transparent);
+}
+
+.picker-trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.picker-sheet.is-searchable {
+  height: min(86dvh, 40rem);
+}
+
+
+.picker-trigger.is-open .picker-chevron {
+  transform: rotate(180deg);
+}
+
+/* ---- Desktop: floating card ---------------------------------------------- */
+.picker-pop {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 30%, var(--color-border-strong));
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-gold-bright) 18%, transparent),
+    0 24px 48px -20px rgb(0 0 0 / 0.75),
+    0 2px 8px rgb(0 0 0 / 0.35);
+}
+
+:root[data-theme="light"] .picker-pop {
+  box-shadow:
+    0 24px 48px -22px rgb(20 20 20 / 0.35),
+    0 2px 8px rgb(20 20 20 / 0.08);
+}
+
+/* ---- Phone: bottom sheet -------------------------------------------------- */
+.picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: flex-end;
+  background: rgb(0 0 0 / 0.62);
+}
+
+:root[data-theme="light"] .picker-overlay {
+  background: rgb(20 20 20 / 0.45);
+}
+
+.picker-sheet {
+  display: flex;
+  width: 100%;
+  max-height: min(86dvh, 40rem);
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 30%, var(--color-border-strong));
+  border-bottom: 0;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--color-surface);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.picker-sheet-head {
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem 0.25rem 1.25rem;
+}
+
+.picker-grab {
+  display: block;
+  width: 2.5rem;
+  height: 0.25rem;
+  margin: 0 auto 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-border-strong);
+}
+
+.picker-close,
+.picker-clear {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  color: var(--color-muted);
+}
+
+.picker-close:hover,
+.picker-clear:hover {
+  background: var(--color-surface-2);
+  color: var(--color-foreground);
+}
+
+/* ---- Shared insides -------------------------------------------------------- */
+.picker-search {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.25rem 0 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-background) 45%, var(--color-surface));
+}
+
+.picker-search-input {
+  min-width: 0;
+  flex: 1;
+  height: 3rem;
+  background: transparent;
+  font-size: 1rem; /* 16px: stops iOS zooming the page on focus */
+  color: var(--color-foreground);
+  outline: none;
+}
+
+.picker-search-input::placeholder {
+  color: var(--color-subtle);
+}
+
+.picker-search:focus-within {
+  box-shadow: inset 0 -2px 0 var(--color-gold-fill);
+}
+
+.picker-list {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.375rem;
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.picker-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.picker-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.picker-list::-webkit-scrollbar-thumb {
+  border: 2px solid var(--color-surface);
+  border-radius: 9999px;
+  background: var(--color-border-strong);
+}
+
+.picker-row {
+  position: relative;
+  display: flex;
+  min-height: 2.75rem;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  scroll-margin: 0.375rem;
+}
+
+.picker-sheet .picker-row {
+  min-height: 3.25rem;
+  font-size: 1rem;
+}
+
+/* Hover / keyboard highlight: gentle gold tint and a thin bar on the left. */
+.picker-row.is-active {
+  background: color-mix(in srgb, var(--color-gold-fill) 12%, transparent);
+}
+
+.picker-row.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--color-gold-fill);
+}
+
+.picker-row.is-disabled {
+  cursor: default;
+}
+
+/* Dim what identifies the row — never the warning badge. */
+.picker-row.is-disabled > span:first-child,
+.picker-row.is-disabled > span > span:first-child {
+  opacity: 0.45;
+}
+
+.picker-meta {
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+}
+
+.picker-mark {
+  border-radius: 0.2rem;
+  background: color-mix(in srgb, var(--color-gold-fill) 26%, transparent);
+  color: var(--color-accent);
+}
+
+/* Chips for what's already picked (compare page). */
+.picker-chip {
+  display: inline-flex;
+  min-height: 2.75rem;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.375rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 26%, var(--color-border-strong));
+  border-radius: 9999px;
+  background: var(--color-surface);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@keyframes picker-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes picker-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes picker-overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .picker-trigger {
+    transition:
+      border-color var(--dur-fast) ease,
+      background-color var(--dur-fast) ease;
+  }
+  .picker-chevron {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .edge-fade::before,
+  .edge-fade::after {
+    transition: opacity var(--dur-fast) ease;
+  }
+  .picker-pop {
+    animation: picker-pop-in var(--dur-fast) var(--ease-out);
+  }
+  .picker-overlay {
+    animation: picker-overlay-in var(--dur-fast) ease-out;
+  }
+  .picker-sheet {
+    animation: picker-sheet-in var(--dur-base) var(--ease-out);
+  }
+}
+
+/* ---- Edge fades for sideways-scrolling rows (header nav, quick links) ------
+   EdgeFade.tsx sets data-fade-start / data-fade-end on the wrapper when
+   there is more to scroll that way. */
+.edge-fade {
+  position: relative;
+  min-width: 0;
+}
+
+.edge-fade-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.edge-fade-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.edge-fade::before,
+.edge-fade::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 2.5rem;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.edge-fade::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--edge-fade-color, var(--color-background)), transparent);
+}
+
+.edge-fade::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--edge-fade-color, var(--color-background)), transparent);
+}
+
+.edge-fade[data-fade-start="true"]::before,
+.edge-fade[data-fade-end="true"]::after {
+  opacity: 1;
+}
+
+:root[data-theme="light"] .site-header .edge-fade {
+  --edge-fade-color: #ffffff;
+}
+
+/* Anything that scrolls sideways is the containing block for what's inside
+   it. Without this, an absolutely positioned child (e.g. a screen-reader-
+   only label in a wide table) escapes the scroller and makes the whole
+   page wider than the screen. In the base layer so `sticky`/`fixed`
+   utilities on the same element still win. */
+@layer base {
+  .overflow-x-auto {
+    position: relative;
+  }
+}
+
+/* Names stay on one line in the desktop card; on the phone sheet they wrap
+   so a long firm name is never cut off. */
+.picker-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-sheet .picker-name {
+  overflow: visible;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+/* Account avatar: the first letter of the email in a gold circle
+   (sign-in, My Hub, profile menu). Never a photo. */
+.avatar-gold {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--color-gold-bright), var(--color-gold-deep));
+  color: var(--color-gold-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold-fill) 22%, transparent);
+}
+
+:root[data-theme="light"] .avatar-gold {
+  color: #ffffff;
+}
+
+/* My Hub: one step of the 9-part Learn tracker. */
+.learn-step {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.375rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-muted);
+  transition:
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+
+.learn-step:hover {
+  border-color: color-mix(in srgb, var(--color-gold) 45%, var(--color-border));
+  color: var(--color-foreground);
+}
+
+.learn-step-dot {
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border-strong);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.learn-step.is-done {
+  color: var(--color-foreground);
+}
+
+.learn-step.is-done .learn-step-dot {
+  border-color: transparent;
+  background: var(--color-success);
+  color: var(--color-background);
+}
+
+.learn-step.is-next {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-gold-fill) 10%, var(--color-surface));
+  color: var(--color-foreground);
+}
+
+.learn-step.is-next .learn-step-dot {
+  border-color: var(--color-gold-fill);
+  color: var(--color-accent);
+}
+
+/* Signal Groups stage — a market gallery, not a long list. */
+.sg-display {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.sg-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (width >= 40rem) {
+  .sg-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 9.5rem;
+  }
+  .sg-tile-lead {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .sg-tile-wide {
+    grid-column: span 2;
+  }
+}
+
+.sg-tile,
+.sg-card {
+  --sg-ink: var(--sg-ink-raw, var(--color-gold));
+}
+
+:root[data-theme="light"] .sg-tile,
+:root[data-theme="light"] .sg-card,
+:root[data-theme="light"] .sg-monogram {
+  --sg-ink: color-mix(in srgb, var(--sg-ink-raw, #9a7420) 62%, #241806);
+}
+
+.sg-tile {
+  position: relative;
+  display: flex;
+  min-height: 11.5rem;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--sg-ink, var(--color-gold)) 35%, var(--color-border));
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--sg-ink, var(--color-gold)) 22%, transparent), transparent 55%),
+    color-mix(in srgb, var(--color-surface) 92%, transparent);
+  padding: 1.25rem 1.35rem 1.1rem;
+  text-align: left;
+  color: var(--color-foreground);
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.sg-tile-lead {
+  min-height: 16rem;
+}
+
+.sg-motif {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.4rem;
+  width: 9rem;
+  height: 9rem;
+  color: var(--sg-ink, var(--color-gold));
+  fill: currentColor;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.sg-tile-lead .sg-motif {
+  width: 14rem;
+  height: 14rem;
+  opacity: 0.28;
+}
+
+.sg-pulse {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.45rem;
+  height: 1.75rem;
+  margin-top: 1rem;
+}
+
+.sg-pulse span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--sg-ink, var(--color-gold));
+  opacity: 0.45;
+}
+
+.sg-tile-line {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 0.9rem;
+  left: 1.25rem;
+  height: 1px;
+  background: var(--sg-ink, var(--color-gold));
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.sg-search {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 28%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  backdrop-filter: blur(16px);
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.sg-search:focus-within {
+  border-color: var(--color-gold);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-gold) 70%, transparent),
+    0 0 28px -8px color-mix(in srgb, var(--color-gold-bright) 80%, transparent);
+}
+
+.sg-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sg-mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(36px);
+}
+
+.sg-mesh-orb-a {
+  top: 8%;
+  right: -6%;
+  width: 28rem;
+  height: 16rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 55%, transparent), transparent 68%);
+}
+
+.sg-mesh-orb-b {
+  right: 18%;
+  bottom: -10%;
+  width: 18rem;
+  height: 18rem;
+  background: radial-gradient(circle, color-mix(in srgb, #2fb7a6 40%, transparent), transparent 70%);
+  opacity: 0.45;
+}
+
+.sg-mesh-orb-c {
+  top: 30%;
+  right: 28%;
+  width: 10rem;
+  height: 10rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold-bright) 70%, transparent), transparent 70%);
+}
+
+.sg-mesh-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.05) 48%, transparent 62%);
+  background-size: 220% 100%;
+}
+
+.sg-monogram {
+  --sg-ink: var(--sg-ink-raw, var(--color-gold));
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sg-ink) 24%, var(--color-surface));
+  color: var(--sg-ink);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.sg-monogram-lg {
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 1.35rem;
+}
+
+.sg-card-stripe {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--sg-ink, var(--color-gold));
+}
+
+.sg-pills {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  padding: 0.25rem;
+}
+
+.sg-pills button {
+  min-height: 2.5rem;
+  border-radius: 999px;
+  padding: 0 0.85rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.sg-pills button.is-on {
+  background: var(--color-gold-fill);
+  color: var(--color-gold-ink);
+}
+
+.sg-sheet-body {
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 0.9rem;
+}
+
+.sg-look {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.sg-look::-webkit-scrollbar {
+  display: none;
+}
+
+.sg-look-row {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+}
+
+.sg-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 100%;
+  height: 2px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--color-gold-fill);
+  pointer-events: none;
+}
+
+.sg-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  width: 18rem;
+  height: 18rem;
+  margin: -9rem 0 0 -9rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 18%, transparent), transparent 68%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.sg-joinbar .btn {
+  width: 100%;
+}
+
+.sg-card {
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.sg-rail {
+  scroll-padding-inline: 0.25rem;
+}
+.sg-rail > li {
+  scroll-snap-align: start;
+}
+
+.sg-backdrop {
+  background: rgb(7 7 8 / 0.62);
+  backdrop-filter: blur(6px);
+}
+
+.sg-panel {
+  width: min(36rem, 100%);
+}
+
+@media (width >= 40rem) {
+  .sg-panel {
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sg-in {
+    animation: sg-rise 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .sg-swap {
+    animation: sg-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .sg-page {
+    animation: sg-slide 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .sg-pulse span {
+    animation: sg-dot 1.8s ease-in-out infinite;
+  }
+  .sg-mesh-orb-a {
+    animation: sg-drift 16s ease-in-out infinite alternate;
+  }
+  .sg-mesh-orb-b {
+    animation: sg-drift 20s ease-in-out infinite alternate-reverse;
+  }
+  .sg-mesh-orb-c {
+    animation: sg-drift 12s ease-in-out infinite alternate;
+  }
+  .sg-mesh-shimmer {
+    animation: sg-shimmer 9s linear infinite;
+  }
+  .sg-tile:hover,
+  .sg-card:hover {
+    transform: translateY(-6px) rotate(-0.4deg);
+    border-color: color-mix(in srgb, var(--sg-ink, var(--color-gold)) 70%, var(--color-border));
+    box-shadow:
+      0 18px 40px -24px color-mix(in srgb, var(--sg-ink, var(--color-gold)) 80%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-gold) 35%, transparent);
+  }
+  .sg-tile:hover .sg-tile-line,
+  .sg-tile:focus-visible .sg-tile-line {
+    transform: scaleX(1);
+    transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sg-panel {
+    transform: translate3d(0, 18%, 0);
+  }
+  .sg-panel.is-in {
+    transform: none;
+    transition: transform 680ms cubic-bezier(0.16, 1.2, 0.3, 1);
+  }
+  @media (width >= 40rem) {
+    .sg-panel {
+      height: 100%;
+      transform: translate3d(110%, 0, 0);
+    }
+    .sg-panel.is-in {
+      transform: none;
+    }
+  }
+}
+
+@keyframes sg-rise {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sg-slide {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sg-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-7px);
+    opacity: 1;
+  }
+}
+
+@keyframes sg-drift {
+  to {
+    transform: translate3d(-8%, -10%, 0) scale(1.08);
+  }
+}
+
+@keyframes sg-shimmer {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+@media (width < 40rem) {
+  .sg-cursor {
+    display: none;
+  }
+}
+
+:root[data-theme="light"] .sg-cursor {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-tile-line {
+    transform: none;
+  }
+  .sg-panel,
+  .sg-tile,
+  .sg-card,
+  .sg-mesh-orb,
+  .sg-mesh-shimmer,
+  .sg-pulse span {
+    transform: none;
+    animation: none;
+  }
+  .sg-cursor {
+    display: none;
   }
 }

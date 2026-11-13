@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
+import SaveButton from "@/components/SaveButton";
 import ToolLogo from "@/components/ToolLogo";
 import {
   TOOL_CATEGORY_LABELS,
@@ -164,17 +165,22 @@ function ToolCard({
 
   return (
     <li
-      className="tool-card lift-card group relative flex flex-col rounded-xl border border-border bg-surface p-4 sm:p-5"
+      className="tool-card lift-card group relative flex cursor-pointer flex-col rounded-xl border border-border bg-surface p-4 sm:p-5"
       style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
     >
       <div className="flex items-start gap-3">
         <ToolLogo name={tool.name} logo={tool.logo} />
         <div className="min-w-0 flex-1">
-          <h2 className="text-base font-semibold tracking-tight text-foreground">{tool.name}</h2>
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
+            <Link href={href} className="card-stretch rounded-xl">
+              {tool.name}
+            </Link>
+          </h2>
           <p className="mt-1">
             <span className="pill">{TOOL_CATEGORY_LABELS[tool.category]}</span>
           </p>
         </div>
+        <SaveButton kind="tool" id={tool.slug} name={tool.name} />
       </div>
 
       <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{tool.description}</p>
@@ -195,7 +201,7 @@ function ToolCard({
       <div className="mt-auto flex items-center justify-end pt-4">
         <Link
           href={href}
-          className="inline-flex min-h-11 items-center text-sm font-semibold text-foreground after:absolute after:inset-0"
+          className="relative z-10 inline-flex min-h-11 items-center text-sm font-semibold text-foreground"
         >
           View
           <span className="sr-only"> {tool.name}</span>

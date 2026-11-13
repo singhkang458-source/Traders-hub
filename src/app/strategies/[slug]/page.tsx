@@ -4,6 +4,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import StrategyBackLink from "@/components/StrategyBackLink";
 import StrategyWalkthrough from "@/components/StrategyWalkthrough";
+import SaveButton from "@/components/SaveButton";
+import TrackView from "@/components/TrackView";
 import {
   ShieldIcon,
   InfoIcon,
@@ -25,21 +27,86 @@ import {
   youtubeThumbnail,
 } from "@/lib/strategy-types";
 import { getStrategy, strategies } from "@/lib/strategies";
+import { strategyMetadata } from "@/lib/strategy-metadata";
 
 export const dynamicParams = false;
 
-// moving-average-crossover has its own literal route (a one-off interactive
-// page, see src/app/strategies/moving-average-crossover/page.tsx) which
-// Next.js resolves ahead of this dynamic one for that exact path — excluded
-// here too so there's only ever one static page generated for that slug.
+// Every free- and intermediate-tier strategy now has its own literal
+// route (a one-off interactive page with a live simulator + a quiz, see
+// e.g. src/app/strategies/moving-average-crossover/page.tsx) which
+// Next.js resolves ahead of this dynamic one for that exact path —
+// excluded here too so there's only ever one static page generated for
+// each of these slugs.
+const INTERACTIVE_SLUGS = [
+  // Free tier
+  "moving-average-crossover",
+  "support-and-resistance",
+  "trendline-trading",
+  "rsi-overbought-oversold",
+  "macd-signal-line-crossover",
+  "bollinger-band-basics",
+  "range-breakout",
+  "candlestick-reversal-basics",
+  "fibonacci-retracement-basics",
+  "basic-chart-patterns",
+  // Intermediate tier
+  "rsi-divergence",
+  "macd-divergence",
+  "stochastic-oscillator",
+  "cci-strategies",
+  "williams-percent-r",
+  "momentum-rate-of-change",
+  "relative-strength-rotation",
+  "on-balance-volume",
+  "adx-dmi-trend-strength",
+  "supertrend",
+  "parabolic-sar",
+  "heikin-ashi-trend",
+  "atr-volatility-breakout",
+  "keltner-channel-pullback",
+  "ma-pullback-continuation",
+  "pivot-points",
+  "vwap-reversion-trend",
+  "opening-range-breakout",
+  "gap-fill-gap-and-go",
+  "inside-bar-nr7",
+  "dow-theory",
+  "supply-and-demand-zones",
+  "head-and-shoulders",
+  "flags-pennants-wedges",
+  "cup-and-handle",
+  "multi-timeframe-analysis",
+  "trading-styles-scalp-day-swing-position",
+  // Advanced tier
+  "wyckoff-method",
+  "volume-spread-analysis",
+  "market-profile",
+  "volume-profile",
+  "order-flow-footprint-charts",
+  "anchored-vwap",
+  "ict-smart-money-concepts",
+  "elliott-wave-theory",
+  "harmonic-patterns",
+  "gann-methods",
+  "fibonacci-confluence",
+  "cycle-analysis",
+  "ichimoku-advanced",
+  "renko-kagi-point-figure",
+  "turtle-trading-donchian",
+  "time-series-momentum",
+  "connors-rsi-2",
+  "elder-triple-screen",
+  "ttm-squeeze",
+  "pairs-trading-stat-arb",
+  "intermarket-analysis",
+];
+
 export function generateStaticParams() {
-  return strategies.filter((s) => s.slug !== "moving-average-crossover").map((s) => ({ slug: s.slug }));
+  return strategies.filter((s) => !INTERACTIVE_SLUGS.includes(s.slug)).map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/strategies/[slug]">): Promise<Metadata> {
-  const s = getStrategy((await params).slug);
-  if (!s) return {};
-  return { title: s.name, description: s.summaryOneLine };
+  return strategyMetadata((await params).slug);
 }
 
 const TONE_CLASS = {
@@ -121,6 +188,7 @@ export default async function StrategyPage({ params }: PageProps<"/strategies/[s
   return (
     <>
       <StrategyBackLink />
+      <TrackView kind="strategy" id={s.slug} />
 
       <header className="detail-hero mt-5 overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="p-5 sm:p-6">
@@ -146,7 +214,10 @@ export default async function StrategyPage({ params }: PageProps<"/strategies/[s
             )}
           </div>
           <p className="meta mt-3">{s.refId}</p>
-          <h1 className="page-title mt-1">{s.name}</h1>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h1 className="page-title mt-1">{s.name}</h1>
+            <SaveButton kind="strategy" id={s.slug} name={s.name} variant="label" />
+          </div>
           <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted">{s.publicTeaser}</p>
         </div>
 

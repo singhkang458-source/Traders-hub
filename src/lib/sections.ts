@@ -14,6 +14,13 @@ export const SITE_NAME = "Tradox";
 
 export const sections: Section[] = [
   {
+    slug: "learn",
+    title: "Learn",
+    summary:
+      "A 9-part intro to trading from the ground up — markets, orders, candlesticks, timeframes, technical and fundamental analysis, risk management, psychology, and costs. Free, no account needed.",
+    status: "live",
+  },
+  {
     slug: "funded-accounts",
     title: "Funded Accounts",
     summary:
@@ -31,14 +38,14 @@ export const sections: Section[] = [
     slug: "signal-groups",
     title: "Signal Groups",
     summary:
-      "Telegram signal groups you can filter by market, trading style, price and language. A directory only — we do not rank groups by results.",
+      "Telegram signal groups you can filter by market, trading style, price and language. A directory only — we list groups, we do not rank them.",
     status: "live",
   },
   {
     slug: "brokers",
     title: "Brokers",
     summary:
-      "Retail brokers for trading your own capital, filterable by regulatory status, minimum deposit and supported platforms.",
+      "CFD brokers are listed now. Stock brokers and crypto exchanges are coming soon. Published terms only — we do not score results.",
     status: "live",
   },
   {
