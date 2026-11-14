@@ -18,6 +18,9 @@ import {
 } from "@/lib/course-filters";
 import TrustpilotStars from "@/components/TrustpilotStars";
 import OurChoiceBadge from "@/components/OurChoiceBadge";
+import SaveButton from "@/components/SaveButton";
+import Picker from "@/components/Picker";
+import { SearchIcon } from "@/components/icons";
 
 type Entry = {
   id: string;
@@ -80,6 +83,22 @@ function Directory({
   initialFilters: Filters;
 }) {
   const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareNote, setCompareNote] = useState("");
+
+  function toggleCompare(id: string) {
+    if (compareIds.includes(id)) {
+      setCompareIds((ids) => ids.filter((i) => i !== id));
+      setCompareNote("");
+      return;
+    }
+    if (compareIds.length >= 3) {
+      setCompareNote("You can compare up to 3 courses. Remove one to add another.");
+      return;
+    }
+    setCompareIds((ids) => [...ids, id]);
+    setCompareNote("");
+  }
 
   const entries: Entry[] = [
     ...courses.map((c) => ({
@@ -136,11 +155,23 @@ function Directory({
   const chips = activeFilterChips(filters);
 
   return (
-    <div>
+    <div className={compareIds.length > 0 ? "pb-20" : ""}>
+      <label className="flex min-h-12 items-center gap-2.5 rounded-xl border border-border bg-surface px-3.5">
+        <SearchIcon className="size-4.5 shrink-0 text-subtle" />
+        <span className="sr-only">Search courses by name</span>
+        <input
+          type="search"
+          value={filters.search}
+          onChange={(e) => updateFilters({ search: e.target.value })}
+          placeholder="Search by name — e.g. “ICT” or “price action”"
+          className="min-w-0 flex-1 bg-transparent py-3 text-base text-foreground outline-none placeholder:text-subtle"
+        />
+      </label>
+
       {/* Filter bar */}
       <form
         aria-label="Filter courses"
-        className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-5"
+        className="kit-panel mt-3 grid grid-cols-2 gap-3 p-3 sm:p-4 lg:grid-cols-5"
         onSubmit={(e) => e.preventDefault()}
       >
         <Select
@@ -216,19 +247,23 @@ function Directory({
       </div>
 
       {matching.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center text-muted">
-          No courses match these filters.
-        </p>
+        <div className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center">
+          <p className="text-muted">No courses match these filters.</p>
+          <button type="button" onClick={() => updateFilters(EMPTY_FILTERS)} className="btn btn-outline mt-4">
+            Clear filters and show everything
+          </button>
+        </div>
       ) : (
-        <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {matching.map((entry) => (
             <li
               key={entry.id}
-              className="lift-card group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface"
+              className={`lift-card kit-panel listing-card group flex cursor-pointer flex-col ${
+                compareIds.includes(entry.id) ? "is-selected" : ""
+              }`}
             >
-              <div className="h-1 w-full bg-gradient-to-r from-gold-deep to-gold-bright" />
               <div className="flex flex-1 flex-col p-5">
-                <div className="flex items-center gap-3">
+                <div className="flex items-start gap-3">
                   {entry.logo ? (
                     <div
                       className={`flex size-14 shrink-0 items-center justify-center rounded-lg p-2 ${
@@ -248,17 +283,24 @@ function Directory({
                       {entry.name.slice(0, 2).toUpperCase()}
                     </div>
                   )}
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <h2 className="text-lg font-semibold">{entry.name}</h2>
+                      <h2 className="text-lg font-semibold leading-tight">
+                        <Link href={entry.href} className="card-stretch rounded-2xl">
+                          {entry.name}
+                        </Link>
+                      </h2>
                       {entry.affiliateLink && <OurChoiceBadge />}
                     </div>
                     {(entry.trustpilot || entry.whop) && (
-                      <div className="mt-1 flex flex-col gap-0.5 text-xs">
+                      <div className="relative z-10 mt-1 flex flex-col gap-0.5 text-xs">
                         {entry.trustpilot && <TrustpilotStars rating={entry.trustpilot} size="sm" />}
                         {entry.whop && <TrustpilotStars rating={entry.whop} size="sm" platform="Whop" />}
                       </div>
                     )}
+                  </div>
+                  <div className="relative z-10 -mr-1.5 -mt-1.5 shrink-0">
+                    <SaveButton kind="course" id={entry.id} name={entry.name} />
                   </div>
                 </div>
 
@@ -272,35 +314,105 @@ function Directory({
                   </div>
                 )}
 
-                {entry.tagline && <p className="mt-4 text-sm text-muted">{entry.tagline}</p>}
+                {entry.tagline && <p className="mt-4 text-sm leading-relaxed text-muted">{entry.tagline}</p>}
 
-                <div className="mt-5 flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    {entry.fromPrice && (
-                      <>
-                        <div className="eyebrow">From</div>
-                        <div className="figure-lg mt-1 text-accent">{entry.fromPrice}</div>
-                      </>
-                    )}
+                <div className="mt-auto pt-5">
+                  <div className="flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
+                    <div>
+                      {entry.fromPrice && (
+                        <>
+                          <div className="eyebrow">From</div>
+                          <div className="figure-lg mt-1 text-accent">{entry.fromPrice}</div>
+                        </>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {entry.listing.hasFreeTier && <span className="badge badge-success">Free tier</span>}
+                      {entry.listing.hasLiveSessions && <span className="pill">Live sessions</span>}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {entry.listing.hasFreeTier && <span className="badge badge-success">Free tier</span>}
-                    {entry.listing.hasLiveSessions && <span className="pill">Live sessions</span>}
+                  {entry.courseCountLabel && <p className="meta mt-2">{entry.courseCountLabel}</p>}
+
+                  <div className="relative z-10 mt-4 flex gap-2">
+                    <Link href={entry.href} className="btn btn-soft min-w-0 flex-1">
+                      {entry.courseCountLabel ? "View courses" : "View course"}
+                      <span className="sr-only"> — {entry.name}</span>
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                    <button
+                      type="button"
+                      aria-pressed={compareIds.includes(entry.id)}
+                      onClick={() => toggleCompare(entry.id)}
+                      className={`btn shrink-0 px-3 ${
+                        compareIds.includes(entry.id)
+                          ? "border-accent bg-accent/12 text-foreground"
+                          : "border-border-strong text-muted hover:border-subtle hover:text-foreground"
+                      }`}
+                    >
+                      <span aria-hidden="true" className="font-mono">
+                        {compareIds.includes(entry.id) ? "✓" : "+"}
+                      </span>
+                      {compareIds.includes(entry.id) ? "Comparing" : "Compare"}
+                      <span className="sr-only"> — {entry.name}</span>
+                    </button>
                   </div>
                 </div>
-                {entry.courseCountLabel && <p className="meta mt-2">{entry.courseCountLabel}</p>}
-
-                <Link
-                  href={entry.href}
-                  className="btn btn-primary mt-5 w-full after:absolute after:inset-0"
-                >
-                  {entry.courseCountLabel ? "View courses" : "View course"}
-                  <span className="sr-only"> — {entry.name}</span>
-                </Link>
               </div>
             </li>
           ))}
         </ul>
+      )}
+
+      {compareIds.length > 0 && (
+        <div className="tray-bottom fixed inset-x-0 z-40">
+          <div className="container-page pb-4">
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border-strong bg-surface p-3 shadow-glow sm:p-4">
+              <span className="meta hidden sm:inline">Comparing:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                {compareIds.map((id) => {
+                  const e = entries.find((en) => en.id === id);
+                  if (!e) return null;
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-border-strong bg-surface-2 py-1 pl-3 pr-2 text-xs font-medium text-foreground"
+                    >
+                      {e.name}
+                      <button
+                        type="button"
+                        onClick={() => toggleCompare(id)}
+                        aria-label={`Remove ${e.name} from comparison`}
+                        className="text-muted hover:text-foreground"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+              {compareNote && <p role="status" className="meta w-full sm:w-auto">{compareNote}</p>}
+              <div className="ml-auto flex items-center gap-3">
+                {compareIds.length < 2 ? (
+                  <span className="meta">Pick at least 2 to compare</span>
+                ) : (
+                  <Link href={`/courses/compare?ids=${compareIds.join(",")}`} className="btn btn-primary">
+                    Compare ({compareIds.length})
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCompareIds([]);
+                    setCompareNote("");
+                  }}
+                  className="text-sm text-muted underline hover:text-foreground"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -308,6 +420,7 @@ function Directory({
 
 function activeFilterChips(f: Filters): { key: keyof Filters; label: string }[] {
   const chips: { key: keyof Filters; label: string }[] = [];
+  if (f.search) chips.push({ key: "search", label: `“${f.search}”` });
   if (f.market) chips.push({ key: "market", label: MARKET_LABELS[f.market as keyof typeof MARKET_LABELS] ?? f.market });
   if (f.maxPrice) chips.push({ key: "maxPrice", label: `Max $${f.maxPrice}` });
   if (f.minRating) chips.push({ key: "minRating", label: `${f.minRating}+ stars` });
@@ -330,16 +443,11 @@ function Select({
   anyLabel?: string;
 }) {
   return (
-    <label className="flex flex-col gap-1">
-      <span className="eyebrow">{label}</span>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className="field">
-        <option value="">{anyLabel}</option>
-        {options.map(([v, text]) => (
-          <option key={v} value={v}>
-            {text}
-          </option>
-        ))}
-      </select>
-    </label>
+    <Picker
+      label={label}
+      value={value}
+      onChange={onChange}
+      options={[{ value: "", label: anyLabel }, ...options.map(([v, text]) => ({ value: v, label: text }))]}
+    />
   );
 }

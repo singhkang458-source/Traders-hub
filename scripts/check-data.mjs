@@ -34,6 +34,9 @@ const STALE_AFTER_DAYS = 30;
 
 // Keep in sync with BrokerMarket in src/lib/broker-types.ts.
 const KNOWN_BROKER_MARKETS = new Set(["stocks", "options", "futures", "forex", "bonds", "funds", "crypto", "cfds"]);
+// Keep in sync with BrokerCategory in src/lib/broker-types.ts.
+const KNOWN_BROKER_CATEGORIES = new Set(["cfd", "stocks", "crypto"]);
+const RESERVED_BROKER_IDS = new Set(["cfd", "stocks", "crypto"]);
 
 // Keep in sync with the signal-group unions in src/lib/signal-group-types.ts.
 // A listing stores one price and one language. The directory can tick several:
@@ -420,7 +423,10 @@ function checkBroker(file, data) {
   const b = data?.broker;
   if (!b) return err(file, `missing top-level "broker"`);
   if (!/^[a-z0-9-]+$/.test(b.id ?? "")) err(file, `broker.id must be lowercase letters, numbers and dashes (got "${b.id}")`);
+  if (RESERVED_BROKER_IDS.has(b.id)) err(file, `broker.id "${b.id}" is reserved for a Brokers tab (/brokers/${b.id})`);
   if (!b.name) err(file, `broker.name is missing`);
+  if (!KNOWN_BROKER_CATEGORIES.has(b.category))
+    err(file, `broker.category "${b.category ?? ""}" must be one of ${[...KNOWN_BROKER_CATEGORIES].join(", ")}`);
   if (!b.about) warn(file, `broker.about is empty - add a short description in our own words`);
   if (b.logo) {
     if (!b.logo.startsWith("/")) err(file, `broker.logo should be a path under /public, e.g. "/brokers/name-logo.png"`);
@@ -709,6 +715,10 @@ function checkSignalFilterRules() {
   const legacy = signalFiltersFromSearch("style=scalping&price=any");
   assert(legacy.styles.join(",") === "scalping", "an older single style value still counts as one tick");
   assert(legacy.prices.length === 0, "price=any means no price filter");
+  const oldPaid = signalFiltersFromSearch("market=gold&price=paid");
+  assert(oldPaid.market === "gold" && oldPaid.prices.length === 0, "price=paid means Any price");
+  const mixedPaid = signalFiltersFromSearch("price=free,paid");
+  assert(mixedPaid.prices.join(",") === "free", "paid is dropped from an older price list");
 }
 
 function checkAll() {
