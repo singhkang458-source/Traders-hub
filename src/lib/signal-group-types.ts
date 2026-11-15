@@ -51,7 +51,8 @@ export const SIGNAL_PRICE_LABELS: Record<SignalPrice, string> = {
   "free-and-vip": "Free + paid VIP",
 };
 
-export const SIGNAL_PRICE_ORDER: SignalPrice[] = ["free", "paid", "free-and-vip"];
+/** Chips on the directory. "paid" stays a valid listing value, but no group is paid-only, so it is not a filter. */
+export const SIGNAL_PRICE_ORDER: SignalPrice[] = ["free", "free-and-vip"];
 
 export const SIGNAL_EXTRA_LABELS: Record<SignalExtra, string> = {
   education: "Education included",
@@ -85,6 +86,18 @@ export type SignalGroupView = {
    */
   telegramUrl: string | null;
   logo: string | null;
+  /** YYYY-MM-DD the listing was last checked. Null when the file has no date. */
+  checkedOn: string | null;
   /** Lower numbers are listed first. */
   rank: number;
 };
+
+/** "2026-10-27" → "27 Oct 2026". Null when the value is missing or not a date. */
+export function formatSignalDate(iso: string | null | undefined): string | null {
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  const [year, month, day] = iso.split("-").map(Number);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const name = months[(month ?? 0) - 1];
+  if (!name || !year || !day) return null;
+  return `${day} ${name} ${year}`;
+}

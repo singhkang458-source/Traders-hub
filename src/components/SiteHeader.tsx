@@ -3,14 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ProfileMenu from "@/components/auth/ProfileMenu";
+import SiteSearch from "@/components/SiteSearch";
 import ThemeToggle from "@/components/ThemeToggle";
+import EdgeFade from "@/components/EdgeFade";
 import { SITE_NAME, sections } from "@/lib/sections";
 
 export default function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="site-header sticky top-0 z-40">
+    <header className="site-header sticky top-0 z-40" style={{ viewTransitionName: "site-header" }}>
       <div className="container-page flex flex-wrap items-center gap-x-3 gap-y-1 py-2 sm:flex-nowrap sm:py-2.5">
         <Link href="/" className="mr-auto flex min-h-11 shrink-0 items-center gap-2.5 rounded-lg sm:order-1 sm:mr-0">
           <Image
@@ -23,11 +26,14 @@ export default function SiteHeader() {
           />
           <span className="site-wordmark text-sm font-semibold tracking-[0.16em] uppercase">{SITE_NAME}</span>
         </Link>
-        <div className="sm:order-3">
+        <div className="flex items-center gap-2 sm:order-3">
+          <SiteSearch />
           <ThemeToggle />
+          <ProfileMenu />
         </div>
-        <nav aria-label="Main" className="relative order-last w-full min-w-0 sm:order-2 sm:w-auto sm:flex-1">
-          <ul className="nav-scroll -mx-1 flex gap-1 overflow-x-auto px-1 py-0.5 pr-8">
+        <nav aria-label="Main" className="order-last w-full min-w-0 sm:order-2 sm:w-auto sm:flex-1">
+          <EdgeFade activeSelector='[aria-current="page"]' watch={pathname}>
+          <ul className="flex w-max gap-1 px-1 py-0.5">
             {sections.map((section) => {
               const href = `/${section.slug}`;
               const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -48,7 +54,7 @@ export default function SiteHeader() {
               );
             })}
           </ul>
-          <span className="nav-fade" aria-hidden="true" />
+          </EdgeFade>
         </nav>
       </div>
     </header>
