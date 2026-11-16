@@ -1230,6 +1230,282 @@ body {
   }
 }
 
+/* Instrument rack: tools sit on a chassis as hardware modules.
+   The grid is the bench. A module is a faceplate, not a text row. */
+.rack-lede {
+  max-width: 40rem;
+  margin-top: 0.85rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.rack-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.35rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35);
+}
+
+.rack-status > div {
+  min-width: 0;
+  padding: 0.7rem 0.75rem 0.8rem;
+}
+
+.rack-status > div + div {
+  border-left: 1px solid var(--color-border);
+}
+
+.rack-status dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.rack-status dd {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-foreground);
+}
+
+@media (max-width: 30rem) {
+  .rack-status {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-status > div + div {
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+.rack-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rack-keys {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  overflow-x: auto;
+  padding: 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+}
+
+.rack-key {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  background: var(--color-surface-2);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
+.rack-key.is-down {
+  color: var(--color-foreground);
+  background: var(--color-background);
+  box-shadow: inset 0 2px 0 var(--color-gold), inset 0 0 0 1px var(--color-border-strong);
+}
+
+.rack-key:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.rack-count {
+  margin-top: 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.rack-empty {
+  margin-top: 0.85rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.rack-bay {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+  padding: 0.7rem;
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 80%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 80%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.rack-unit {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  grid-template-areas:
+    "screen face"
+    "readout readout";
+  gap: 0.75rem 0.85rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 2px;
+  background: var(--color-surface);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+
+.rack-screws {
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 0 0, var(--color-border-strong) 1.5px, transparent 2px),
+    radial-gradient(circle at 100% 0, var(--color-border-strong) 1.5px, transparent 2px),
+    radial-gradient(circle at 0 100%, var(--color-border-strong) 1.5px, transparent 2px),
+    radial-gradient(circle at 100% 100%, var(--color-border-strong) 1.5px, transparent 2px);
+}
+
+.rack-screen {
+  grid-area: screen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.25rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-background);
+  box-shadow: inset 0 0 0 3px var(--color-surface-2);
+}
+
+.rack-screen > div {
+  border-radius: 0;
+}
+
+.rack-face {
+  grid-area: face;
+  min-width: 0;
+}
+
+.rack-name {
+  border-radius: 2px;
+}
+
+.rack-name:hover {
+  color: var(--color-accent);
+}
+
+.rack-cat {
+  margin-top: 0.2rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.rack-view {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.rack-readout {
+  grid-area: readout;
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.rack-readout dt {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.rack-readout dd {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-foreground);
+}
+
+.rack-faq {
+  max-width: 40rem;
+  margin-top: 2.75rem;
+}
+
+.rack-faq-mark {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.group[open] .rack-faq-mark {
+  transform: rotate(45deg);
+}
+
+@media (min-width: 64rem) {
+  .rack-unit {
+    grid-template-columns: 4.25rem minmax(0, 1fr) 9.5rem;
+    grid-template-areas: "screen face readout";
+    align-items: start;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .rack-key:active {
+    transform: translateY(1px);
+  }
+
+  .rack-unit:hover .rack-screen {
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--color-gold) 55%, var(--color-surface-2));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rack-key,
+  .rack-faq-mark,
+  .rack-unit,
+  .rack-screen {
+    transition: none;
+    animation: none;
+  }
+
+  .group[open] .rack-faq-mark {
+    transform: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;

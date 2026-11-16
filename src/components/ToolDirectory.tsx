@@ -70,8 +70,8 @@ function Directory({ tools, initialQuery }: { tools: ToolView[]; initialQuery: s
   const listingQuery = currentListingQuery(category, query);
 
   return (
-    <div>
-      <label className="flex flex-col gap-1">
+    <div className="rack">
+      <label className="rack-search">
         <span className="eyebrow">Search</span>
         <input
           type="search"
@@ -82,7 +82,7 @@ function Directory({ tools, initialQuery }: { tools: ToolView[]; initialQuery: s
         />
       </label>
 
-      <div className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Tool categories">
+      <div className="rack-keys" role="tablist" aria-label="Tool categories">
         <CategoryChip
           label="All"
           count={tools.length}
@@ -100,17 +100,17 @@ function Directory({ tools, initialQuery }: { tools: ToolView[]; initialQuery: s
         ))}
       </div>
 
-      <p aria-live="polite" className="meta mt-4">
+      <p aria-live="polite" className="rack-count">
         <span className="font-semibold text-foreground">{matching.length}</span> of {tools.length} shown
         {activeCategory !== "all" ? ` in ${TOOL_CATEGORY_LABELS[activeCategory]}` : ""}. Forex and gold tools stay at the top.
       </p>
 
       {matching.length === 0 ? (
-        <p className="mt-8 rounded-xl border border-dashed border-border-strong px-6 py-12 text-center text-muted">
+        <p className="rack-empty">
           No tools match this search. Try another name, or clear the category.
         </p>
       ) : (
-        <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="rack-bay">
           {matching.map((tool, index) => (
             <ToolCard key={tool.slug} tool={tool} index={index} listingQuery={listingQuery} />
           ))}
@@ -137,11 +137,7 @@ function CategoryChip({
       role="tab"
       aria-selected={pressed}
       onClick={onClick}
-      className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors duration-150 ${
-        pressed
-          ? "border-accent bg-accent/15 text-foreground"
-          : "border-border-strong bg-surface text-muted hover:border-subtle hover:text-foreground"
-      }`}
+      className={`rack-key${pressed ? " is-down" : ""}`}
     >
       {label}
       <span className={`tabular-nums ${pressed ? "text-foreground" : "text-subtle"}`}>{count}</span>
@@ -164,55 +160,42 @@ function ToolCard({
     : `/tools/${tool.slug}`;
 
   return (
-    <li
-      className="tool-card lift-card group relative flex cursor-pointer flex-col rounded-xl border border-border bg-surface p-4 sm:p-5"
-      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
-    >
-      <div className="flex items-start gap-3">
-        <ToolLogo name={tool.name} logo={tool.logo} />
-        <div className="min-w-0 flex-1">
-          <h2 className="text-base font-semibold tracking-tight text-foreground">
-            <Link href={href} className="card-stretch rounded-xl">
+    <li className="rack-unit">
+      <span className="rack-screws" aria-hidden="true" />
+      <div className="rack-screen">
+        <ToolLogo name={tool.name} logo={tool.logo} priority={index < 2} />
+      </div>
+      <div className="rack-face">
+        <div className="flex items-start gap-2">
+          <h2 className="min-w-0 flex-1 text-base font-semibold tracking-tight text-foreground">
+            <Link href={href} className="card-stretch rack-name">
               {tool.name}
             </Link>
           </h2>
-          <p className="mt-1">
-            <span className="pill">{TOOL_CATEGORY_LABELS[tool.category]}</span>
-          </p>
+          <div className="relative z-10 shrink-0">
+            <SaveButton kind="tool" id={tool.slug} name={tool.name} />
+          </div>
         </div>
-        <SaveButton kind="tool" id={tool.slug} name={tool.name} />
+        <p className="rack-cat">{TOOL_CATEGORY_LABELS[tool.category]}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{tool.description}</p>
+        <Link href={href} className="rack-view relative z-10">
+          View
+          <span className="sr-only"> {tool.name}</span>
+          <span aria-hidden="true"> →</span>
+        </Link>
       </div>
-
-      <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{tool.description}</p>
-
-      <dl className="mt-4 grid grid-cols-1 gap-3 border-t border-border pt-3">
+      <dl className="rack-readout">
         <div>
-          <dt className="eyebrow">Price from</dt>
-          <dd className="mt-1 text-sm font-semibold text-foreground">{price ?? "Not listed"}</dd>
+          <dt>Price from</dt>
+          <dd>{price ?? "Not listed"}</dd>
         </div>
         {tool.platforms.length > 0 && (
           <div>
-            <dt className="eyebrow">Platforms</dt>
-            <dd className="mt-1 line-clamp-2 text-sm text-foreground">{tool.platforms.join(", ")}</dd>
+            <dt>Platforms</dt>
+            <dd>{tool.platforms.join(", ")}</dd>
           </div>
         )}
       </dl>
-
-      <div className="mt-auto flex items-center justify-end pt-4">
-        <Link
-          href={href}
-          className="relative z-10 inline-flex min-h-11 items-center text-sm font-semibold text-foreground"
-        >
-          View
-          <span className="sr-only"> {tool.name}</span>
-          <span
-            aria-hidden="true"
-            className="ml-1 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none"
-          >
-            →
-          </span>
-        </Link>
-      </div>
     </li>
   );
 }
