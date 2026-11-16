@@ -9,8 +9,8 @@ export default function PropFirmNotes({
   filterNote?: boolean;
 }) {
   return (
-    <details className="group rounded-xl border border-border bg-surface">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-surface-2 [&::-webkit-details-marker]:hidden">
+    <details className="challenge-notes group">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
         <span className="flex items-center gap-2">
           <span
             aria-hidden="true"
@@ -24,7 +24,7 @@ export default function PropFirmNotes({
           ▾
         </span>
       </summary>
-      <ul className="meta list-disc space-y-1.5 border-t border-border px-4 py-4 pl-9 marker:text-subtle">
+      <ul className="meta list-disc space-y-1.5 border-t border-border py-4 pl-5 marker:text-subtle">
         <li>
           <strong className="font-semibold text-foreground">Rules:</strong> forex
           rules are shown as a percentage of the account size; futures rules are

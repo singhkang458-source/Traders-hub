@@ -149,7 +149,7 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
   const chips = activeFilterChips(filters);
 
   return (
-    <div className={comparePlans.length > 0 ? "pb-24" : ""}>
+    <div className={`challenge-book${comparePlans.length > 0 ? " pb-24" : ""}`}>
       <CountrySwitch
         country={country}
         onChange={setCountry}
@@ -189,7 +189,7 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
       {/* Filter bar */}
       <form
         aria-label="Filter prop firm accounts"
-        className="kit-panel mt-3 grid grid-cols-2 gap-3 p-3 sm:p-4 lg:grid-cols-5"
+        className="challenge-filters mt-3 grid grid-cols-2 gap-3 py-3 lg:grid-cols-5"
         onSubmit={(e) => e.preventDefault()}
       >
         <Select
@@ -266,14 +266,14 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
 
       {/* Firm cards */}
       {matchingFirms.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center">
+        <div className="challenge-empty">
           <p className="text-muted">No firms have accounts matching these filters.</p>
           <button type="button" onClick={() => updateFilters(EMPTY_FILTERS)} className="btn btn-outline mt-4">
             Clear filters and show everything
           </button>
         </div>
       ) : (
-        <ul className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <ul className="challenge-slips">
           {matchingFirms.map(({ firm, matches, availability }) => {
             const cheapest = matches
               .filter((a) => a.lowestPrice != null)
@@ -287,76 +287,68 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
             const minSize = Math.min(...sizes);
             const maxSize = Math.max(...sizes);
             return (
-              <li
-                key={firm.id}
-                className={`lift-card kit-panel listing-card flex cursor-pointer flex-col p-5 ${inCompare ? "is-selected" : ""}`}
-              >
-                <div className="flex items-start gap-3">
-                  <FirmBadge name={firm.name} logo={firm.logo} logoBg={firm.logoBg} />
-                  <div className="min-w-0 flex-1">
-                    <h2 className="line-clamp-2 break-words text-lg font-semibold leading-tight">
-                      <Link href={`/funded-accounts/${firm.id}${query}`} className="card-stretch rounded-2xl">
-                        {firm.name}
-                      </Link>
-                    </h2>
-                    <div className="mt-1.5 flex flex-wrap gap-1.5">
-                      {firm.markets.map((m) => (
-                        <span key={m.market} className="pill">
-                          {MARKET_LABELS[m.market]}
-                        </span>
-                      ))}
-                    </div>
+              <li key={firm.id} className={`challenge-slip${inCompare ? " is-armed" : ""}`}>
+                <div className="challenge-slip-fee">
+                  <div className="eyebrow">From</div>
+                  <div className="challenge-slip-price">
+                    {cheapest ? money(cheapest.lowestPrice!, firm.currency) : "—"}
                   </div>
-                  <div className="relative z-10 -mr-1.5 -mt-1.5 shrink-0">
-                    <SaveButton kind="firm" id={firm.id} name={firm.name} />
-                  </div>
+                  {cheapest?.monthly && <div className="meta">/month</div>}
                 </div>
 
-                {(firm.reviewAlert || availability?.status === "unknown") && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {firm.reviewAlert && (
-                      <span className="badge badge-warning whitespace-normal">Payout complaints in recent reviews</span>
-                    )}
-                    {availability?.status === "unknown" && (
-                      <span className="pill whitespace-normal text-xs" title={availability.reason}>
-                        Country list not published
-                      </span>
-                    )}
+                <div className="challenge-slip-body">
+                  <div className="flex items-start gap-3">
+                    <FirmBadge name={firm.name} logo={firm.logo} logoBg={firm.logoBg} />
+                    <div className="min-w-0 flex-1">
+                      <h2 className="break-words text-lg font-semibold leading-tight">
+                        <Link href={`/funded-accounts/${firm.id}${query}`} className="card-stretch challenge-slip-name">
+                          {firm.name}
+                        </Link>
+                      </h2>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {firm.markets.map((m) => (
+                          <span key={m.market} className="pill">
+                            {MARKET_LABELS[m.market]}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="relative z-10 shrink-0">
+                      <SaveButton kind="firm" id={firm.id} name={firm.name} />
+                    </div>
                   </div>
-                )}
 
-                <div className="mt-auto pt-5">
-                  <div className="eyebrow">From</div>
-                  <div className="figure-lg mt-1 text-accent">
-                    {cheapest ? (
-                      <>
-                        {money(cheapest.lowestPrice!, firm.currency)}
-                        {cheapest.monthly && <span className="ml-1 text-sm font-medium text-muted">/month</span>}
-                      </>
-                    ) : (
-                      "—"
-                    )}
-                  </div>
-                  <dl className="stat-strip mt-3 grid-cols-[1fr_1.4fr_1fr]">
-                    <div className="stat-cell">
-                      <dt className="eyebrow">Max split</dt>
-                      <dd className="stat-value">{splits.length > 0 ? `${Math.max(...splits)}%` : "—"}</dd>
+                  {(firm.reviewAlert || availability?.status === "unknown") && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {firm.reviewAlert && (
+                        <span className="badge badge-warning whitespace-normal">Payout complaints in recent reviews</span>
+                      )}
+                      {availability?.status === "unknown" && (
+                        <span className="pill whitespace-normal text-xs" title={availability.reason}>
+                          Country list not published
+                        </span>
+                      )}
                     </div>
-                    <div className="stat-cell">
-                      <dt className="eyebrow">Sizes</dt>
-                      <dd className="stat-value">
-                        {minSize === maxSize ? sizeLabel(minSize) : `${sizeLabel(minSize)}–${sizeLabel(maxSize)}`}
-                      </dd>
+                  )}
+
+                  <dl className="challenge-slip-terms">
+                    <div>
+                      <dt>Max split</dt>
+                      <dd>{splits.length > 0 ? `${Math.max(...splits)}%` : "—"}</dd>
                     </div>
-                    <div className="stat-cell">
-                      <dt className="eyebrow">Accounts</dt>
-                      <dd className="stat-value">{matches.length}</dd>
+                    <div>
+                      <dt>Sizes</dt>
+                      <dd>{minSize === maxSize ? sizeLabel(minSize) : `${sizeLabel(minSize)}–${sizeLabel(maxSize)}`}</dd>
+                    </div>
+                    <div>
+                      <dt>Accounts</dt>
+                      <dd>{matches.length}</dd>
                     </div>
                   </dl>
 
-                  {/* The whole card is clickable through the name link's overlay. */}
-                  <div className="relative z-10 mt-4 flex gap-2">
-                    <Link href={`/funded-accounts/${firm.id}${query}`} className="btn btn-soft min-w-0 flex-1 whitespace-nowrap px-3">
+                  {/* The whole slip is clickable through the name link's overlay. */}
+                  <div className="challenge-slip-actions relative z-10">
+                    <Link href={`/funded-accounts/${firm.id}${query}`} className="btn btn-soft min-w-0 px-3">
                       View challenges
                       <span className="sr-only"> — {firm.name}</span>
                       <span aria-hidden="true">→</span>
@@ -377,15 +369,15 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
                       {inCompare ? "Comparing" : "Compare"}
                       <span className="sr-only"> — {firm.name}</span>
                     </button>
+                    {firm.affiliateLink && (
+                      <VisitSiteLink
+                        href={firm.affiliateLink}
+                        firmName={firm.name}
+                        variant="outline"
+                        className="challenge-slip-visit"
+                      />
+                    )}
                   </div>
-                  {firm.affiliateLink && (
-                    <VisitSiteLink
-                      href={firm.affiliateLink}
-                      firmName={firm.name}
-                      variant="outline"
-                      className="relative z-10 mt-2 w-full"
-                    />
-                  )}
                 </div>
               </li>
             );
@@ -394,8 +386,8 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
       )}
 
       {restrictedFirms.length > 0 && (
-        <details className="group kit-panel mt-8">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-surface-2 [&::-webkit-details-marker]:hidden">
+        <details className="challenge-hidden group">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
             <span>
               {restrictedFirms.length} firm{restrictedFirms.length === 1 ? "" : "s"} hidden — their published
               country list includes where you live
@@ -406,7 +398,7 @@ function Directory({ firms, initialFilters }: { firms: FirmView[]; initialFilter
           </summary>
           <ul className="divide-y divide-border border-t border-border">
             {restrictedFirms.map(({ firm, availability }) => (
-              <li key={firm.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+              <li key={firm.id} className="flex flex-wrap items-center gap-3 py-3">
                 <FirmBadge name={firm.name} logo={firm.logo} logoBg={firm.logoBg} />
                 <div className="min-w-0 flex-1">
                   <Link href={`/funded-accounts/${firm.id}${query}`} className="font-semibold hover:text-accent">

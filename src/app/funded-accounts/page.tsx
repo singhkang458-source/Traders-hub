@@ -4,7 +4,6 @@ import PropFirmNotes from "@/components/PropFirmNotes";
 import PropFirmToolbar from "@/components/PropFirmToolbar";
 import { propFirms } from "@/lib/propfirms";
 import { getSection } from "@/lib/sections";
-import PageIntro from "@/components/PageIntro";
 
 const section = getSection("funded-accounts");
 
@@ -18,7 +17,13 @@ export default function FundedAccountsPage() {
 
   return (
     <>
-      <PageIntro eyebrow="Prop firms" title={<>{section.title}</>} lede={<>Compare prop firm challenges side by side: price, rules and profit split.</>} />
+      <header className="challenge-mast">
+        <p className="eyebrow">Prop firms</p>
+        <h1 className="page-title mt-2">{section.title}</h1>
+        <p className="challenge-lede">
+          Compare prop firm challenges side by side: price, rules and profit split.
+        </p>
+      </header>
 
       <div className="mt-6">
         <PropFirmToolbar />
