@@ -9,18 +9,18 @@ export const metadata: Metadata = {
 const CONCEPTS = [
   {
     href: "/preview/kinetic",
-    name: "Kinetic",
-    line: "The page is the words. Headlines fill the screen and drift as you scroll.",
+    name: "Spine",
+    line: "The headline stands down the side of the page. The seven sections live in a sideways band.",
   },
   {
     href: "/preview/tape",
-    name: "Tape",
-    line: "A gold news wire. Every section is announced by a ticker you can pause.",
+    name: "Book",
+    line: "The homepage is a terminal. You open one section at a time from a list of rows.",
   },
   {
     href: "/preview/candle",
-    name: "Candle",
-    line: "The homepage is one chart of its own sections. Not a price, and not a result.",
+    name: "Trace",
+    line: "You travel down the page along a gold line. Each section is a stop on that path.",
   },
 ];
 
@@ -28,7 +28,7 @@ export default function PreviewIndex() {
   return (
     <div className="hx-index">
       <p className="eyebrow">Homepage previews</p>
-      <h1 className="page-title mt-2">Three ways in. Pick one.</h1>
+      <h1 className="page-title mt-2">Three different pages.</h1>
       <ul>
         {CONCEPTS.map((concept) => (
           <li key={concept.href}>
