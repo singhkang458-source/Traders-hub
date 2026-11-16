@@ -18,10 +18,8 @@ import { sortBrokers } from "@/lib/broker-filters";
 import FirmBadge from "@/components/FirmBadge";
 import ScrollReveal from "@/components/ScrollReveal";
 import FaqDetails from "@/components/FaqDetails";
-import AuroraHero, { WordReveal } from "@/components/hero/AuroraHero";
 import HeroSearchButton from "@/components/hero/HeroSearchButton";
 import CountUpStat from "@/components/CountUpStat";
-import SpotlightRow from "@/components/explore/SpotlightRow";
 import MiniCurriculumPath from "@/components/explore/MiniCurriculumPath";
 import MiniBarCompare, { type BarItem } from "@/components/explore/MiniBarCompare";
 import MiniDotPlot from "@/components/explore/MiniDotPlot";
@@ -388,90 +386,92 @@ export default function Home() {
   ];
 
   return (
-    <div className="homepage-v3">
-      {/* ---------------------------------------------------------------- */}
-      {/* Hero — three slow aurora gradients, a faint grid and a price line */}
-      {/* that draws itself once, all CSS/SVG (see AuroraHero.tsx). The     */}
-      {/* headline and the search box are plain HTML painted on the first  */}
-      {/* frame; the word-by-word rise and the staggered entrances are      */}
-      {/* opacity/transform only and switch off under reduced motion.      */}
-      {/* ---------------------------------------------------------------- */}
-      <AuroraHero>
-        <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col items-center py-[clamp(2.5rem,9vh,6rem)] text-center">
-          <p className="hero-intro eyebrow flex items-center gap-2.5 text-[0.7rem]">
+    <div className="home-door">
+      <section className="compass" aria-labelledby="hero-heading">
+        <div className="compass-face">
+          <p className="eyebrow flex items-center justify-center gap-2.5 text-[0.7rem]">
             <Image src="/brand/tradox-td.png" alt="" width={44} height={44} priority className="size-7 rounded-lg" />
             UAE · Trading, simplified for everyone
           </p>
           <h1
             id="hero-heading"
-            className="mt-5 max-w-full text-balance text-[clamp(2.4rem,9vw,5.75rem)] font-bold leading-[0.98] tracking-[-0.03em] text-foreground"
-            style={{ fontFamily: "var(--font-heading)" }}
+            className="compass-title"
           >
-            <WordReveal text="Trading, decoded." />
+            Trading, decoded.
           </h1>
-          <p className="hero-intro mt-5 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style={{ animationDelay: "160ms" }}>
+          <p className="compass-lede">
             Prop firms, courses, signal groups, brokers, tools and strategies — real pricing, real
             rules, and live simulators you can practise on before you spend a cent.
           </p>
-          <div className="hero-intro mt-7 flex w-full justify-center" style={{ animationDelay: "260ms" }}>
-            <HeroSearchButton />
-          </div>
-          <div className="hero-intro mt-4 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: "340ms" }}>
-            <Link href="/start-here" className="btn btn-primary">
-              <CompassIcon className="size-4" />
-              New to trading? Start here
-            </Link>
-            <Link href="/funded-accounts" className="btn btn-outline">
-              Browse prop firms
-            </Link>
-          </div>
-
-          <dl
-            className="hero-intro mt-10 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-4"
-            style={{ animationDelay: "440ms" }}
-          >
-            {heroStats.map((s) => (
-              <div key={s.label} className="bg-surface px-4 py-3 text-left sm:px-5">
-                <dd className="figure-lg font-mono text-2xl text-foreground sm:text-3xl">
-                  <CountUpStat value={s.value} />
-                </dd>
-                <dt className="eyebrow mt-1">{s.label}</dt>
-              </div>
-            ))}
-          </dl>
-          <p className="hero-intro meta mt-3 font-mono text-[0.7rem]" style={{ animationDelay: "520ms" }}>
-            {TOTAL_LISTINGS}+ listings · zero performance scores · zero rankings
-          </p>
         </div>
-      </AuroraHero>
+        <nav className="compass-bearings" aria-label="Sections on this page">
+          <span className="compass-ring" aria-hidden="true" />
+          {liveSections.map((s, i) => (
+            <a
+              key={s.slug}
+              href={`#section-${s.slug}`}
+              className="compass-bearing"
+              style={{ ["--bearing" as string]: `${-90 + (360 / liveSections.length) * i}deg` }}
+            >
+              <span className="compass-count">{sectionCounts[s.slug] ?? 0}</span>
+              <span className="compass-label">{s.title}</span>
+            </a>
+          ))}
+        </nav>
+      </section>
+      <div className="compass-after">
+        <div className="flex w-full justify-center">
+          <HeroSearchButton />
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/start-here" className="btn btn-primary">
+            <CompassIcon className="size-4" />
+            New to trading? Start here
+          </Link>
+          <Link href="/funded-accounts" className="btn btn-outline">
+            Browse prop firms
+          </Link>
+        </div>
+        <dl className="compass-stats">
+          {heroStats.map((s) => (
+            <div key={s.label}>
+              <dd>
+                <CountUpStat value={s.value} />
+              </dd>
+              <dt>{s.label}</dt>
+            </div>
+          ))}
+        </dl>
+        <p className="meta mt-3 text-center font-mono text-[0.7rem]">
+          {TOTAL_LISTINGS}+ listings · zero performance scores · zero rankings
+        </p>
+      </div>
 
       {/* ---------------------------------------------------------------- */}
       {/* How it works — three steps, added so the hero isn't carrying the */}
       {/* entire first impression on its own.                              */}
       {/* ---------------------------------------------------------------- */}
       <ScrollReveal>
-        <section aria-labelledby="how-heading" className="border-y border-border py-12">
+        <section aria-labelledby="how-heading" className="home-seq">
           <h2 id="how-heading" className="sr-only">
             How {SITE_NAME} works
           </h2>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6">
+          <ol>
             {HOW_IT_WORKS.map(({ icon: Icon, title, text }, i) => (
-              <div key={title} className="relative pl-0 sm:border-t-2 sm:border-gold-fill/30 sm:pt-6">
-                <span
-                  aria-hidden="true"
-                  className="block text-5xl font-bold text-border-strong sm:text-6xl"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
+              <li key={title}>
+                <span className="home-seq-num" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="mt-2 flex size-10 items-center justify-center rounded-lg bg-accent/12 text-accent">
-                  <Icon className="size-5" />
-                </span>
-                <h3 className="mt-3 text-lg font-bold text-foreground">{title}</h3>
-                <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-muted">{text}</p>
-              </div>
+                <div>
+                  <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
+                    <Icon className="size-4 text-accent" aria-hidden="true" />
+                    {title}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted">{text}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
       </ScrollReveal>
 
@@ -481,10 +481,8 @@ export default function Home() {
       {/* so a returning visitor sees where they got to.                    */}
       {/* ---------------------------------------------------------------- */}
       <ScrollReveal className="cv-auto">
-        <section aria-labelledby="start-here-heading" className="border-t border-border py-14">
-          <div className="start-here-band relative overflow-hidden rounded-2xl border border-accent/30 bg-surface p-6 shadow-glow sm:p-8">
-            <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold-fill/12 via-transparent to-transparent" />
-            <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+        <section aria-labelledby="start-here-heading" className="home-start">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-center">
               <div>
                 <p className="eyebrow">Guided path</p>
                 <h2 id="start-here-heading" className="section-title mt-2 text-3xl sm:text-4xl">
@@ -498,9 +496,9 @@ export default function Home() {
                   <StartHereMini />
                 </div>
               </div>
-              <ol className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <ol className="home-path">
                 {START_HERE_PATH.map((stage, i) => (
-                  <li key={stage.id} className="relative rounded-xl border border-border bg-background/70 p-4">
+                  <li key={stage.id} className="relative">
                     <span className="eyebrow">Stage {i + 1}</span>
                     <p className="mt-1 font-semibold text-foreground">
                       <Link href={stage.href} className="card-stretch rounded-xl hover:text-accent">
@@ -514,7 +512,6 @@ export default function Home() {
                 ))}
               </ol>
             </div>
-          </div>
         </section>
       </ScrollReveal>
 
@@ -535,45 +532,34 @@ export default function Home() {
         </h2>
         <p className="mt-2 max-w-xl text-muted">One site, seven ways to get your bearings — pick wherever you want to start.</p>
 
-        <div className="mt-8 flex flex-col gap-5">
+        <div className="mt-8 flex flex-col">
           {liveSections.map((s, i) => {
             const meta = EXPLORE_META[s.slug];
             const Icon = meta?.icon ?? WaveStructureIcon;
             const chartFirst = i % 2 === 1;
             return (
               <ScrollReveal key={s.slug} delay={Math.min(i, 3) * 60} className="cv-auto">
-                <SpotlightRow>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-stretch">
-                    <div className={`flex flex-col justify-center p-6 sm:p-8 ${chartFirst ? "lg:order-last" : ""}`}>
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent">
-                          <Icon className="size-5.5" />
-                        </span>
-                        <span className="pill shrink-0">{sectionCounts[s.slug] ?? 0} listed</span>
-                      </div>
-                      <h3 className="mt-4 text-2xl font-bold">
-                        <Link href={`/${s.slug}`} className="card-stretch rounded-xl hover:text-accent">
-                          {s.title}
-                        </Link>
-                      </h3>
-                      <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">{meta?.blurb ?? s.summary}</p>
-
-                      <div className="mt-5 max-w-md">{sectionSnapshots[s.slug]}</div>
-
-                      <Link href={`/${s.slug}`} className="btn btn-outline relative z-10 mt-5 w-fit">
-                        {s.slug === "learn" ? "Start learning" : `Browse ${s.title.toLowerCase()}`}
+                <article id={`section-${s.slug}`} className={`home-band${chartFirst ? " is-flipped" : ""}`}>
+                  <div className="home-band-copy">
+                    <p className="eyebrow flex items-center gap-2">
+                      <Icon className="size-4" aria-hidden="true" />
+                      {sectionCounts[s.slug] ?? 0} listed
+                    </p>
+                    <h3 className="mt-3 text-2xl font-bold">
+                      <Link href={`/${s.slug}`} className="home-band-title">
+                        {s.title}
                       </Link>
-                    </div>
-
-                    <div
-                      className={`flex items-stretch border-t border-border bg-surface-2/40 p-6 sm:p-8 lg:border-t-0 ${
-                        chartFirst ? "lg:border-r" : "lg:border-l"
-                      }`}
-                    >
-                      <div className="min-h-[220px] w-full">{sectionCharts[s.slug]}</div>
-                    </div>
+                    </h3>
+                    <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">{meta?.blurb ?? s.summary}</p>
+                    <div className="mt-5 max-w-md">{sectionSnapshots[s.slug]}</div>
+                    <Link href={`/${s.slug}`} className="btn btn-outline relative z-10 mt-5 w-fit">
+                      {s.slug === "learn" ? "Start learning" : `Browse ${s.title.toLowerCase()}`}
+                    </Link>
                   </div>
-                </SpotlightRow>
+                  <div className="home-band-chart">
+                    <div className="min-h-[220px] w-full">{sectionCharts[s.slug]}</div>
+                  </div>
+                </article>
               </ScrollReveal>
             );
           })}
@@ -591,19 +577,14 @@ export default function Home() {
           </h2>
           <p className="mt-2 max-w-xl text-muted">The short version of how this site works and why we built it this way.</p>
 
-          <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <ul className="home-why">
             {WHY_POINTS.map(({ icon: Icon, title, text }) => (
-              <li
-                key={title}
-                className="flex gap-4 rounded-xl border border-border bg-surface p-5 transition-colors hover:border-accent/40"
-              >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/12 text-accent">
-                  <Icon className="size-5" />
-                </span>
-                <div>
-                  <p className="font-semibold text-foreground">{title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{text}</p>
-                </div>
+              <li key={title}>
+                <p className="flex items-center gap-2 font-semibold text-foreground">
+                  <Icon className="size-4 shrink-0 text-accent" aria-hidden="true" />
+                  {title}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-muted">{text}</p>
               </li>
             ))}
           </ul>
@@ -639,13 +620,8 @@ export default function Home() {
       {/* Closing CTA band                                                  */}
       {/* ---------------------------------------------------------------- */}
       <ScrollReveal className="cv-auto">
-        <section className="relative overflow-hidden rounded-2xl border border-accent/30 bg-surface p-8 text-center shadow-glow sm:p-12">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold-fill/15 via-transparent to-transparent"
-          />
-          <PlayIcon className="mx-auto size-9 text-accent" />
-          <h2 className="section-title mt-4 text-2xl sm:text-3xl">Not sure where to start?</h2>
+        <section className="home-close">
+          <h2 className="section-title text-2xl sm:text-3xl">Not sure where to start?</h2>
           <p className="mx-auto mt-2 max-w-md text-muted">
             Try a free strategy first — it&apos;s the fastest way to see what {SITE_NAME} actually
             is before you dig into firms, courses or anything else.
