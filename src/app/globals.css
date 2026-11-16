@@ -2202,6 +2202,96 @@ body {
   }
 }
 
+/* Tear-off tickets. The dashed edge is the stub you copy a code from.
+   Nothing here counts down or ranks a discount. */
+.ticket-lede {
+  max-width: 42rem;
+  margin-top: 0.85rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.ticket-filter {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border: 1px solid var(--color-border-strong);
+  padding: 0 0.9rem;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.ticket-filter.is-on {
+  background: var(--color-foreground);
+  color: var(--color-background);
+}
+
+.ticket-filter:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.ticket-empty {
+  margin-top: 1.5rem;
+  color: var(--color-muted);
+}
+
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticket {
+  display: grid;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+}
+
+.ticket-body {
+  min-width: 0;
+  padding: 1rem 1rem 1.1rem;
+}
+
+.ticket-stub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+  border-top: 1px dashed var(--color-border-strong);
+  background: var(--color-background);
+}
+
+.ticket-notes {
+  max-width: 40rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 48rem) {
+  .ticket {
+    grid-template-columns: minmax(0, 1fr) 13.5rem;
+  }
+
+  .ticket-stub {
+    border-top: 0;
+    border-left: 1px dashed var(--color-border-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket-filter,
+  .ticket {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
@@ -2932,6 +3022,7 @@ input.signal-filter-search {
 
 .copy-button.is-copied {
   border-color: var(--color-success);
+  background: var(--color-background);
   color: var(--color-success);
 }
 
