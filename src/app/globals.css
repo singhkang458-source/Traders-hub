@@ -2428,6 +2428,113 @@ body {
   }
 }
 
+/* The trail: three stages side by side, joined by one line across the top.
+   Ticks still say what is done. The line is not a countdown. */
+.trail-lede {
+  max-width: 42rem;
+  margin-top: 0.85rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.trail-wrap {
+  margin-top: 2rem;
+}
+
+.trail-now {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.trail {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail-stage {
+  min-width: 0;
+  padding: 1.15rem 0 1.5rem;
+  border-top: 3px solid var(--color-border-strong);
+}
+
+.trail-stage.is-done {
+  border-top-color: var(--color-success);
+}
+
+.trail-steps {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail-step {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: start;
+  min-height: 2.75rem;
+  padding: 0.55rem 0;
+  border-radius: 0.2rem;
+}
+
+.trail-mark {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.trail-mark.is-done {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: var(--color-gold-ink);
+}
+
+@media (min-width: 64rem) {
+  .trail-now {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .trail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .trail-stage {
+    padding: 1.25rem 1.25rem 0 0;
+    border-top: 3px solid var(--color-border-strong);
+    border-left: 1px solid var(--color-border);
+  }
+
+  .trail-stage:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .trail-stage:last-child {
+    padding-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-step,
+  .trail-stage {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
