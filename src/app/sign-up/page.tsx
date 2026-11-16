@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import AuthPanel from "@/components/auth/AuthPanel";
 import { SITE_NAME } from "@/lib/sections";
-import PageIntro from "@/components/PageIntro";
 
 export const metadata: Metadata = {
   title: "Create an account",
@@ -13,12 +12,12 @@ export const metadata: Metadata = {
 // each other and carry ?next= across.
 export default function SignUpPage() {
   return (
-    <div className="mx-auto max-w-5xl">
-      <PageIntro
-        eyebrow="Account"
-        title={<>Create your {SITE_NAME} account</>}
-        lede={<>Free. Your saved listings, your learning progress and what you&apos;re using — in one place, on any device.</>}
-      />
+    <div className="gate-page is-wide">
+      <header className="gate-mast">
+        <p className="eyebrow">Account</p>
+        <h1 className="gate-title">Create your {SITE_NAME} account</h1>
+        <p className="gate-lede">Free. Your saved listings, your learning progress and what you&apos;re using — in one place, on any device.</p>
+      </header>
       <AuthPanel intent="sign-up" />
     </div>
   );

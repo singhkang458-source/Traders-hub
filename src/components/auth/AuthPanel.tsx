@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ArrowRight, Bookmark, Briefcase, Columns3, GraduationCap, LogOut, Mail } from "lucide-react";
+import { Suspense, useEffect, useId, useRef, useState } from "react";
+import { ArrowRight, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { PasswordInput, PasswordStrengthHint } from "@/components/auth/PasswordInput";
 import { passwordProblem } from "@/lib/password-rules";
@@ -104,7 +104,8 @@ function Panel({ intent, next, errorKey }: { intent: AuthIntent; next: string; e
 
   if (status === "disabled") {
     return (
-      <div className="kit-panel mt-8 max-w-md p-6">
+      <div className="gate-shell mt-8 max-w-md">
+        <div className="gate">
         <p className="font-semibold text-foreground">Accounts aren&apos;t switched on yet.</p>
         <p className="meta mt-2">
           Everything else on {SITE_NAME} works without one — saved items and progress are kept in this browser.
@@ -112,6 +113,7 @@ function Panel({ intent, next, errorKey }: { intent: AuthIntent; next: string; e
         <Link href="/" className="btn btn-outline mt-4">
           Back to the homepage
         </Link>
+        </div>
       </div>
     );
   }
@@ -120,9 +122,10 @@ function Panel({ intent, next, errorKey }: { intent: AuthIntent; next: string; e
     const initial = (user.email ?? "?").charAt(0).toUpperCase();
     const onward = /^\/sign-(in|up)\b/.test(next) ? DEFAULT_NEXT : next;
     return (
-      <div className="kit-panel mt-8 max-w-md p-6">
+      <div className="gate-shell mt-8 max-w-md">
+        <div className="gate">
         <div className="flex items-center gap-4">
-          <span aria-hidden="true" className="avatar-gold size-14 text-xl">
+          <span aria-hidden="true" className="gate-initial">
             {initial}
           </span>
           <div className="min-w-0">
@@ -142,13 +145,14 @@ function Panel({ intent, next, errorKey }: { intent: AuthIntent; next: string; e
             Sign out
           </button>
         </div>
+        </div>
       </div>
     );
   }
 
   if (intent === "sign-up") {
     return (
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] lg:items-start lg:gap-10">
+      <div className="gate-split mt-8">
         <AuthCard intent={intent} next={next} errorKey={errorKey} loading={status === "loading"} />
         <Benefits />
       </div>
@@ -412,18 +416,16 @@ function AuthCard({ intent, next, errorKey, loading }: { intent: AuthIntent; nex
   return (
     <div className="min-w-0">
       {error && (
-        <p role="alert" className="mb-4 rounded-xl border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-foreground">
+        <p role="alert" className="gate-alert">
           {error}
         </p>
       )}
 
-      <div className="kit-panel p-5 sm:p-6">
+      <div className="gate-shell">
+      <div className="gate">
         {sent ? (
-          <div className="text-center">
-            <span className="icon-chip mx-auto size-12" aria-hidden="true">
-              <Mail className="size-6" />
-            </span>
-            <h2 ref={sentHeadingRef} tabIndex={-1} className="section-title mt-4 outline-none">
+          <div>
+            <h2 ref={sentHeadingRef} tabIndex={-1} className="gate-sent outline-none">
               Check your inbox
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -546,12 +548,9 @@ function AuthCard({ intent, next, errorKey, loading }: { intent: AuthIntent; nex
                     />
                   </div>
                   <PasswordStrengthHint id={hintId} password={password} />
-                  <p className="flex gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm leading-relaxed text-muted">
-                    <Mail className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
-                    <span>
-                      You&apos;ll still need to confirm by email: we&apos;ll send a link to this address, and your account is
-                      ready once you open it.
-                    </span>
+                  <p className="gate-confirm">
+                    You&apos;ll still need to confirm by email: we&apos;ll send a link to this address, and your account is
+                    ready once you open it.
                   </p>
                 </>
               )}
@@ -572,7 +571,7 @@ function AuthCard({ intent, next, errorKey, loading }: { intent: AuthIntent; nex
                       : "Sign in"}
               </button>
               {!(isSignUp && mode === "password") && (
-                <p className="text-center text-xs text-subtle">
+                <p className="text-xs leading-relaxed text-subtle">
                   {mode === "password"
                     ? "Only works if you've set a password. Not sure? Use an email link instead."
                     : isSignUp
@@ -593,6 +592,7 @@ function AuthCard({ intent, next, errorKey, loading }: { intent: AuthIntent; nex
             {isSignUp ? "Sign in" : "Create an account"}
           </Link>
         </p>
+      </div>
       </div>
     </div>
   );
@@ -634,25 +634,20 @@ function SentMessage({ sent, isSignUp, address }: { sent: "link" | "confirm" | "
 }
 
 function Benefits() {
-  const rows: { icon: (p: { className?: string }) => ReactNode; title: string; text: string }[] = [
-    { icon: Bookmark, title: "Your saved listings, everywhere", text: "Firms, courses, brokers and tools you bookmark follow you to your phone." },
-    { icon: GraduationCap, title: "Your learning progress", text: "Where you are in the 9-part Learn course and which strategy quizzes you've done." },
-    { icon: Briefcase, title: "What you're using", text: "Tick the firms, brokers, courses and tools you use, and see them all in My Hub." },
-    { icon: Columns3, title: "Saved comparisons", text: "Come back to a side-by-side without rebuilding it." },
+  const rows: { title: string; text: string }[] = [
+    { title: "Your saved listings, everywhere", text: "Firms, courses, brokers and tools you bookmark follow you to your phone." },
+    { title: "Your learning progress", text: "Where you are in the 9-part Learn course and which strategy quizzes you've done." },
+    { title: "What you're using", text: "Tick the firms, brokers, courses and tools you use, and see them all in My Hub." },
+    { title: "Saved comparisons", text: "Come back to a side-by-side without rebuilding it." },
   ];
   return (
-    <div className="min-w-0">
+    <div className="gate-reasons">
       <p className="readout">What an account gives you</p>
-      <ul className="mt-4 space-y-4">
-        {rows.map(({ icon: Icon, title, text }) => (
-          <li key={title} className="flex gap-3">
-            <span className="icon-chip mt-0.5" aria-hidden="true">
-              <Icon className="size-4" />
-            </span>
-            <span className="min-w-0">
-              <span className="block font-semibold text-foreground">{title}</span>
-              <span className="block text-sm leading-relaxed text-muted">{text}</span>
-            </span>
+      <ul className="mt-2">
+        {rows.map(({ title, text }) => (
+          <li key={title} className="gate-reason">
+            <span className="block font-semibold text-foreground">{title}</span>
+            <span className="mt-1 block text-sm leading-relaxed text-muted">{text}</span>
           </li>
         ))}
       </ul>
