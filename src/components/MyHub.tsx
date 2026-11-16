@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Bell, Bookmark, Briefcase, Clock, Columns3, GraduationCap, KeyRound, LineChart, LogOut, ShieldCheck } from "lucide-react";
+import { KeyRound, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import PasswordForm from "@/components/auth/PasswordForm";
 import { loadCatalog, getCachedCatalog } from "@/lib/catalog-client";
@@ -101,14 +101,13 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
   const signedIn = status === "signed-in" && user;
 
   return (
-    <div className="mt-6 space-y-8">
-      {/* ---- Profile ---------------------------------------------------- */}
-      <section aria-label="Your account" className="kit-panel p-5 sm:p-6">
-        <div className="flex flex-wrap items-center gap-4">
-          <span aria-hidden="true" className="avatar-gold size-12 text-xl sm:size-16 sm:text-2xl">
+    <div className="locker">
+      <section aria-label="Your account" className="locker-plate">
+        <div className="locker-who">
+          <span aria-hidden="true" className="locker-mark">
             {signedIn ? (user.email ?? "?").charAt(0).toUpperCase() : "?"}
           </span>
-          <div className="min-w-[11rem] flex-1">
+          <div className="min-w-0 flex-1">
             {status === "loading" ? (
               <div className="skeleton h-12 w-64 rounded-lg" />
             ) : signedIn ? (
@@ -154,7 +153,7 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
           )}
         </div>
 
-        <dl className="stat-strip mt-5 grid-cols-2 sm:grid-cols-4">
+        <dl className="locker-counts">
           <Stat label="Learn" value={`${learnDone} / ${LEARN_TOPICS.length}`} />
           <Stat label="Quizzes done" value={`${quizDoneSet.size} / ${quizCount}`} />
           <Stat label="Saved" value={String(saved.length)} />
@@ -162,11 +161,10 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
         </dl>
       </section>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="min-w-0 space-y-8">
-          {/* ---- Learn: the 9 parts ------------------------------------- */}
-          <Section icon={GraduationCap} title="Learn to trade — the 9 parts" count={`${learnDone}/${LEARN_TOPICS.length}`}>
-            <ol className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <div className="locker-wall">
+        <div className="locker-main">
+          <Section title="Learn to trade — the 9 parts" count={`${learnDone}/${LEARN_TOPICS.length}`}>
+            <ol className="pigeon-slots">
               {LEARN_TOPICS.map((t, i) => {
                 const done = learnDoneSet.has(t.slug);
                 const isNext = i === nextTopicIndex;
@@ -174,13 +172,13 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
                   <li key={t.slug}>
                     <Link
                       href={`/learn/${t.slug}`}
-                      className={`learn-step ${done ? "is-done" : ""} ${isNext ? "is-next" : ""}`}
+                      className={`pigeon-slot ${done ? "is-done" : ""} ${isNext ? "is-next" : ""}`}
                       aria-label={`Part ${i + 1}: ${t.title}${done ? " (done)" : isNext ? " (up next)" : ""}`}
                     >
-                      <span className="learn-step-dot" aria-hidden="true">
+                      <span className={`pigeon-slot-num ${done ? "is-done" : ""}`} aria-hidden="true">
                         {done ? <CheckIcon className="size-3.5" /> : i + 1}
                       </span>
-                      <span className="min-w-0 truncate text-sm font-medium">{t.shortTitle}</span>
+                      <span className="pigeon-slot-name">{t.shortTitle}</span>
                     </Link>
                   </li>
                 );
@@ -201,12 +199,11 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             </div>
           </Section>
 
-          {/* ---- Strategies ---------------------------------------------- */}
-          <Section icon={LineChart} title="Strategies you're learning" count={strategyIds.length || undefined}>
+          <Section title="Strategies you're learning" count={strategyIds.length || undefined}>
             {strategyIds.length === 0 ? (
               <Empty text="Open any strategy to start — each has a live chart and a short quiz." href="/strategies" action="Browse strategies" />
             ) : (
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+              <ul>
                 {strategyIds.slice(0, 10).map((id) => (
                   <ItemRow
                     key={id}
@@ -229,17 +226,16 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             )}
           </Section>
 
-          {/* ---- What I'm using ------------------------------------------ */}
-          <Section icon={Briefcase} title="What I'm using" count={stack.length || undefined}>
+          <Section title="What I'm using" count={stack.length || undefined}>
             <p className="meta mb-3">
               Firms, brokers, courses and tools you&apos;ve ticked on their pages. Only you see this — we don&apos;t check it
               or share it.
             </p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="pigeon-grid">
               {STACK_GROUPS.map((g) => {
                 const items = stack.filter((s) => s.kind === g.kind);
                 return (
-                  <div key={g.kind} className="kit-panel p-4">
+                  <div key={g.kind} className="pigeon-hole">
                     <p className="eyebrow">{g.title}</p>
                     {items.length === 0 ? (
                       <p className="mt-2 text-sm text-muted">
@@ -249,7 +245,7 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
                         </Link>
                       </p>
                     ) : (
-                      <ul className="mt-2 divide-y divide-border">
+                      <ul className="mt-1">
                         {items.map((s) => (
                           <ItemRow
                             key={s.id}
@@ -276,18 +272,17 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             </div>
           </Section>
 
-          {/* ---- Saved listings ------------------------------------------ */}
-          <Section icon={Bookmark} title="Saved listings" count={saved.length || undefined}>
+          <Section title="Saved listings" count={saved.length || undefined}>
             {saved.length === 0 ? (
               <Empty text="Tap the bookmark on any firm, course, broker, tool, signal group or strategy to save it here." href="/funded-accounts" action="Browse prop firms" />
             ) : (
               <>
                 {catalogFailed && <p className="meta mb-2">Couldn&apos;t load listing names — links still work.</p>}
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {savedByKind.map((g) => (
-                    <div key={g.kind}>
-                      <p className="eyebrow mb-2">{CATALOG_KIND_LABELS[g.kind]}</p>
-                      <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+                    <div key={g.kind} className="pigeon-hole">
+                      <p className="eyebrow">{CATALOG_KIND_LABELS[g.kind]}</p>
+                      <ul className="mt-1">
                         {g.items.map((s) => (
                           <ItemRow
                             key={`${s.kind}:${s.id}`}
@@ -313,12 +308,11 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             )}
           </Section>
 
-          {/* ---- Saved comparisons --------------------------------------- */}
           {comparisons.length > 0 && (
-            <Section icon={Columns3} title="Saved comparisons" count={comparisons.length}>
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+            <Section title="Saved comparisons" count={comparisons.length}>
+              <ul>
                 {comparisons.map((c) => (
-                  <li key={`${c.kind}:${c.query}`} className="flex items-center gap-3 p-3">
+                  <li key={`${c.kind}:${c.query}`} className="pigeon-slip">
                     <Link href={`${COMPARISON_PATHS[c.kind]}${c.query}`} className="min-w-0 flex-1 hover:text-accent">
                       <span className="block truncate font-semibold">{c.title || "Comparison"}</span>
                       <span className="meta block capitalize">{c.kind}</span>
@@ -336,14 +330,13 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             </Section>
           )}
 
-          {/* ---- Alerts --------------------------------------------------- */}
           {optedIn.length > 0 && (
-            <Section icon={Bell} title="Price & promo alerts" count={optedIn.length}>
+            <Section title="Price & promo alerts" count={optedIn.length}>
               <p className="meta mb-3">
                 Firms you&apos;ve asked to hear about. No emails go out yet — this is the consented list for when alerts
                 launch.
               </p>
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+              <ul>
                 {optedIn.map((a) => (
                   <ItemRow
                     key={a.firmId}
@@ -365,10 +358,9 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
             </Section>
           )}
 
-          {/* ---- Recently viewed ------------------------------------------ */}
           {recents.length > 0 && (
-            <Section icon={Clock} title="Recently viewed" count={recents.length}>
-              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+            <Section title="Recently viewed" count={recents.length}>
+              <ul>
                 {recents.slice(0, 12).map((r) => (
                   <ItemRow
                     key={`${r.kind}:${r.id}`}
@@ -386,92 +378,99 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
           )}
         </div>
 
-        {/* ---- Account column ------------------------------------------- */}
-        <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+        <aside className="locker-side">
           {signedIn && (
-            <div className="kit-panel p-5">
-              <p className="flex items-center gap-2 font-semibold text-foreground">
-                <KeyRound className="size-4 text-accent" aria-hidden="true" />
-                Password
-              </p>
-              {user.hasPassword && !changingPassword ? (
-                <>
-                  <p className="meta mt-2">Set. You can sign in with your email and password, Google or an email link.</p>
-                  <button type="button" onClick={() => setChangingPassword(true)} className="btn btn-outline mt-3 w-full">
-                    Change password
-                  </button>
-                </>
-              ) : (
-                <>
-                  <p className="meta mt-2 mb-3">
-                    {user.hasPassword
-                      ? "Choose a new password."
-                      : "Optional. Add one to sign in without waiting for an email."}
-                  </p>
-                  <PasswordForm
-                    submitLabel={user.hasPassword ? "Save new password" : "Add password"}
-                    onDone={changingPassword ? () => setChangingPassword(false) : undefined}
-                  />
-                  {changingPassword && (
-                    <button type="button" onClick={() => setChangingPassword(false)} className="mt-2 inline-flex min-h-11 items-center text-xs text-muted underline">
-                      Cancel
+            <section className="pigeon">
+              <h2 className="pigeon-label">
+                <span className="inline-flex items-center gap-2">
+                  <KeyRound className="size-3.5" aria-hidden="true" />
+                  Password
+                </span>
+              </h2>
+              <div className="pigeon-body">
+                {user.hasPassword && !changingPassword ? (
+                  <>
+                    <p className="meta">Set. You can sign in with your email and password, Google or an email link.</p>
+                    <button type="button" onClick={() => setChangingPassword(true)} className="btn btn-outline mt-3 w-full">
+                      Change password
                     </button>
-                  )}
-                </>
-              )}
-            </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="meta mb-3">
+                      {user.hasPassword
+                        ? "Choose a new password."
+                        : "Optional. Add one to sign in without waiting for an email."}
+                    </p>
+                    <PasswordForm
+                      submitLabel={user.hasPassword ? "Save new password" : "Add password"}
+                      onDone={changingPassword ? () => setChangingPassword(false) : undefined}
+                    />
+                    {changingPassword && (
+                      <button type="button" onClick={() => setChangingPassword(false)} className="mt-2 inline-flex min-h-11 items-center text-xs text-muted underline">
+                        Cancel
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </section>
           )}
 
-          <div className="kit-panel p-5">
-            <p className="flex items-center gap-2 font-semibold text-foreground">
-              <ShieldCheck className="size-4 text-accent" aria-hidden="true" />
-              Your data
-            </p>
-            {signedIn ? (
-              <>
-                <p className="meta mt-2">
-                  We hold your user id, email, the time you confirmed you&apos;re 18+, and what&apos;s on this page. If you set
-                  a password, our account provider stores it hashed — we never see it. Deleting your account removes all of
-                  it, permanently.
-                </p>
-                {!confirmDelete ? (
-                  <button type="button" onClick={() => setConfirmDelete(true)} className="mt-3 inline-flex min-h-11 items-center text-xs text-danger underline">
-                    Delete my account
-                  </button>
-                ) : (
-                  <div className="mt-3 rounded-lg border border-danger/40 bg-danger/10 p-3">
-                    <p className="text-sm font-semibold text-foreground">Delete everything? This can&apos;t be undone.</p>
-                    <p className="meta mt-1">Your browser copy of saved items stays until you clear site data.</p>
-                    {deleteError && (
-                      <p role="alert" className="mt-2 text-xs text-danger">
-                        {deleteError}
-                      </p>
-                    )}
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        type="button"
-                        disabled={deleting}
-                        onClick={deleteAccount}
-                        className="btn min-h-10 flex-1 border-danger bg-danger text-white hover:bg-danger/90 disabled:opacity-60"
-                      >
-                        {deleting ? "Deleting…" : "Yes, delete"}
-                      </button>
-                      <button type="button" disabled={deleting} onClick={() => setConfirmDelete(false)} className="btn btn-outline min-h-10 flex-1">
-                        Keep it
-                      </button>
+          <section className="pigeon">
+            <h2 className="pigeon-label">
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck className="size-3.5" aria-hidden="true" />
+                Your data
+              </span>
+            </h2>
+            <div className="pigeon-body">
+              {signedIn ? (
+                <>
+                  <p className="meta">
+                    We hold your user id, email, the time you confirmed you&apos;re 18+, and what&apos;s on this page. If you set
+                    a password, our account provider stores it hashed — we never see it. Deleting your account removes all of
+                    it, permanently.
+                  </p>
+                  {!confirmDelete ? (
+                    <button type="button" onClick={() => setConfirmDelete(true)} className="mt-3 inline-flex min-h-11 items-center text-xs text-danger underline">
+                      Delete my account
+                    </button>
+                  ) : (
+                    <div className="mt-3 border border-danger/40 bg-danger/10 p-3">
+                      <p className="text-sm font-semibold text-foreground">Delete everything? This can&apos;t be undone.</p>
+                      <p className="meta mt-1">Your browser copy of saved items stays until you clear site data.</p>
+                      {deleteError && (
+                        <p role="alert" className="mt-2 text-xs text-danger">
+                          {deleteError}
+                        </p>
+                      )}
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          type="button"
+                          disabled={deleting}
+                          onClick={deleteAccount}
+                          className="btn min-h-10 flex-1 border-danger bg-danger text-white hover:bg-danger/90 disabled:opacity-60"
+                        >
+                          {deleting ? "Deleting…" : "Yes, delete"}
+                        </button>
+                        <button type="button" disabled={deleting} onClick={() => setConfirmDelete(false)} className="btn btn-outline min-h-10 flex-1">
+                          Keep it
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="meta mt-2">Everything on this page is stored in this browser only. Clearing site data removes it.</p>
-            )}
-            <p className="meta mt-4">
-              <Link href="/privacy" className="text-accent underline">
-                Privacy policy
-              </Link>
-            </p>
-          </div>
+                  )}
+                </>
+              ) : (
+                <p className="meta">Everything on this page is stored in this browser only. Clearing site data removes it.</p>
+              )}
+              <p className="meta mt-4">
+                <Link href="/privacy" className="text-accent underline">
+                  Privacy policy
+                </Link>
+              </p>
+            </div>
+          </section>
         </aside>
       </div>
     </div>
@@ -480,43 +479,38 @@ export default function MyHub({ quizCount, firmNames }: { quizCount: number; fir
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="stat-cell">
-      <dt className="eyebrow">{label}</dt>
-      <dd className="stat-value">{value}</dd>
+    <div className="locker-count">
+      <dt>{label}</dt>
+      <dd>{value}</dd>
     </div>
   );
 }
 
 function Section({
-  icon: Icon,
   title,
   count,
   children,
 }: {
-  icon: (p: { className?: string }) => ReactNode;
   title: string;
   count?: number | string;
   children: ReactNode;
 }) {
   return (
-    <section>
-      <h2 className="section-title flex items-center gap-2.5">
-        <span className="icon-chip" aria-hidden="true">
-          <Icon className="size-4" />
-        </span>
-        {title}
-        {count != null && <span className="pill ml-1 font-mono">{count}</span>}
+    <section className="pigeon">
+      <h2 className="pigeon-label">
+        <span>{title}</span>
+        {count != null && <span className="pigeon-count">{count}</span>}
       </h2>
-      <div className="mt-4">{children}</div>
+      <div className="pigeon-body">{children}</div>
     </section>
   );
 }
 
 function Empty({ text, href, action }: { text: string; href: string; action: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-border-strong p-5">
-      <p className="text-sm text-muted">{text}</p>
-      <Link href={href} className="btn btn-outline mt-3">
+    <div className="pigeon-empty">
+      <p>{text}</p>
+      <Link href={href} className="btn btn-outline">
         {action}
       </Link>
     </div>
@@ -539,17 +533,17 @@ function ItemRow({
   const href = item?.href ?? fallbackHref(fallback.kind, fallback.id);
   const title = item?.title ?? fallback.title ?? fallback.id;
   return (
-    <li className={`flex items-center gap-3 ${compact ? "py-1.5" : "p-3"}`}>
+    <li className={`pigeon-slip ${compact ? "is-compact" : ""}`}>
       {item?.logo ? (
-        <span className={`flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border p-1 ${item.logoBg === "dark" ? "bg-black" : "bg-white"}`}>
+        <span className={`pigeon-stamp ${item.logoBg === "dark" ? "is-dark" : ""}`}>
           <Image src={item.logo} alt="" width={40} height={40} className="size-full object-contain" />
         </span>
       ) : (
-        <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-xs font-bold uppercase text-muted">
+        <span aria-hidden="true" className="pigeon-stamp is-blank">
           {loading ? "" : title.slice(0, 2)}
         </span>
       )}
-      <Link href={href} className="group min-w-0 flex-1 hover:text-accent">
+      <Link href={href} className="min-w-0 flex-1 hover:text-accent">
         {loading && !item ? (
           <span className="skeleton block h-4 w-40 rounded" />
         ) : (
