@@ -86,7 +86,7 @@ function Directory({
     <div>
       {/* One-click browse by style, leading with the icons from the cards
           below so the same visual language carries through. */}
-      <ul className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+      <ul className="plot-keys">
         {CATEGORY_ORDER.filter((c) => categoriesPresent.has(c)).map((c) => {
           const Icon = STRATEGY_CATEGORY_ICONS[c];
           const active = filters.category === c;
@@ -96,11 +96,7 @@ function Directory({
                 type="button"
                 onClick={() => updateFilters({ category: active ? "" : c })}
                 aria-pressed={active}
-                className={`flex min-h-11 items-center gap-2 rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors ${
-                  active
-                    ? "border-accent bg-accent/12 text-foreground"
-                    : "border-border-strong bg-surface text-muted hover:border-subtle hover:text-foreground"
-                }`}
+                className={`plot-key${active ? " is-on" : ""}`}
               >
                 <Icon className="size-4" />
                 {STRATEGY_CATEGORY_LABELS[c]}
@@ -110,7 +106,7 @@ function Directory({
         })}
       </ul>
 
-      <label className="kit-panel mt-3 flex min-h-12 items-center gap-2.5 px-3.5">
+      <label className="plot-search">
         <SearchIcon className="size-4.5 shrink-0 text-subtle" />
         <span className="sr-only">Search strategies by name</span>
         <input
@@ -124,7 +120,7 @@ function Directory({
 
       <form
         aria-label="Filter strategies"
-        className="kit-panel mt-3 grid grid-cols-1 gap-3 p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-4"
+        className="plot-filters mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
         onSubmit={(e) => e.preventDefault()}
       >
         <Select
@@ -184,18 +180,23 @@ function Directory({
       </div>
 
       {matching.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center">
+        <div className="plot-empty">
           <p className="text-muted">No strategies match these filters.</p>
           <button type="button" onClick={() => updateFilters(EMPTY_FILTERS)} className="btn btn-outline mt-4">
             Clear filters and show everything
           </button>
         </div>
       ) : (
-        <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <>
+        <p className="plot-diagram-note">
+          Each drawing is a category diagram. It is not a price, and it is not a result.
+        </p>
+        <ul className="plot-sheet">
           {matching.map((s) => (
             <StrategyCard key={s.slug} strategy={s} listingQuery={filtersToQuery(filters)} />
           ))}
         </ul>
+        </>
       )}
     </div>
   );
@@ -209,19 +210,16 @@ function Directory({
 // score, which this site never shows.
 function StrategyCard({ strategy: s, listingQuery }: { strategy: StrategyView; listingQuery: string }) {
   const href = listingQuery ? `/strategies/${s.slug}${listingQuery}` : `/strategies/${s.slug}`;
-  const CategoryIcon = STRATEGY_CATEGORY_ICONS[s.category];
 
   return (
-    <li className="lift-card kit-panel listing-card group flex cursor-pointer flex-col">
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-start gap-3">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-accent">
-            <CategoryIcon className="size-6" />
-          </div>
+    <li className="plot-mark">
+      <CategoryTrace category={s.category} />
+      <div className="min-w-0">
+        <div className="flex items-start gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <h2 className="text-lg font-semibold leading-tight">
-                <Link href={href} className="card-stretch rounded-2xl">
+              <h2 className="plot-name">
+                <Link href={href} className="card-stretch plot-title">
                   {s.name}
                 </Link>
               </h2>
@@ -229,13 +227,13 @@ function StrategyCard({ strategy: s, listingQuery }: { strategy: StrategyView; l
             </div>
             <p className="mt-1 text-xs font-medium text-subtle">{STRATEGY_CATEGORY_LABELS[s.category]}</p>
           </div>
-          <div className="relative z-10 -mr-1.5 -mt-1.5 shrink-0">
+          <div className="relative z-10 shrink-0">
             <SaveButton kind="strategy" id={s.slug} name={s.name} />
           </div>
         </div>
 
         {s.markets.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {s.markets.slice(0, 3).map((m) => (
               <span key={m} className="pill">
                 {STRATEGY_MARKET_LABELS[m]}
@@ -245,42 +243,62 @@ function StrategyCard({ strategy: s, listingQuery }: { strategy: StrategyView; l
           </div>
         )}
 
-        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-muted">{s.publicTeaser}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{s.publicTeaser}</p>
 
-        <div className="mt-auto pt-5">
-          <div className="flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
-            <div>
-              <div className="eyebrow">Tier</div>
-              <div className="figure-lg mt-1 text-accent">{STRATEGY_TIER_LABELS[s.tier]}</div>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <span className="pill">{STRATEGY_DIFFICULTY_LABELS[s.difficulty]}</span>
-              {s.controversyFlag && (
-                <span className="badge badge-warning inline-flex items-center gap-1">
-                  <ShieldIcon className="size-3" />
-                  Debated
-                </span>
-              )}
-            </div>
-          </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="plot-tier">{STRATEGY_TIER_LABELS[s.tier]}</span>
+          <span className="pill">{STRATEGY_DIFFICULTY_LABELS[s.difficulty]}</span>
+          {s.controversyFlag && (
+            <span className="badge badge-warning inline-flex items-center gap-1">
+              <ShieldIcon className="size-3" />
+              Debated
+            </span>
+          )}
+        </div>
 
-          <div className="relative z-10 mt-4 flex gap-2">
-            <Link href={href} className="btn btn-soft min-w-0 flex-1">
-              View strategy
-              <span className="sr-only"> — {s.name}</span>
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href={`${href}#simulator-heading`}
-              className="btn shrink-0 border-border-strong px-3 text-muted hover:border-subtle hover:text-foreground"
-            >
-              Try it live
-              <span className="sr-only"> — {s.name} simulator</span>
-            </Link>
-          </div>
+        <div className="relative z-10 mt-3 flex flex-wrap gap-2">
+          <Link href={href} className="btn btn-soft min-w-0 px-3">
+            View strategy
+            <span className="sr-only"> — {s.name}</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+          <Link
+            href={`${href}#simulator-heading`}
+            className="btn shrink-0 border-border-strong px-3 text-muted hover:border-subtle hover:text-foreground"
+          >
+            Try it live
+            <span className="sr-only"> — {s.name} simulator</span>
+          </Link>
         </div>
       </div>
     </li>
+  );
+}
+
+function CategoryTrace({ category }: { category: StrategyCategory }) {
+  return (
+    <svg viewBox="0 0 88 40" className="plot-trace" aria-hidden="true">
+      {category === "trend_following" && <path d="M4 24 L18 14 L30 22 L46 12 L58 26 L72 16 L84 22" />}
+      {category === "mean_reversion" && <path d="M4 20 Q16 6 28 20 T52 20 T76 20" />}
+      {category === "breakout" && <path d="M4 20 H34 L48 8 L62 20 H84" />}
+      {category === "price_action" && <path d="M6 22 L20 12 L32 26 L48 10 L62 24 L84 16" />}
+      {category === "momentum" && <path d="M4 20 C12 10 18 30 28 20 C38 8 46 32 58 20 C68 10 76 30 84 20" />}
+      {category === "volume_order_flow" && (
+        <path d="M10 30 V18 M22 30 V10 M34 30 V22 M46 30 V8 M58 30 V16 M70 30 V12 M82 30 V20" />
+      )}
+      {category === "market_structure" && <path d="M4 26 L16 12 L28 22 L44 10 L58 24 L72 14 L84 20" />}
+      {category === "quantitative" && (
+        <g>
+          <path d="M6 20 H82" strokeDasharray="2 3" />
+          <path d="M16 20 V20 M32 14 V14 M48 26 V26 M64 12 V12 M78 22 V22" />
+          <circle cx="16" cy="20" r="2.2" />
+          <circle cx="32" cy="14" r="2.2" />
+          <circle cx="48" cy="26" r="2.2" />
+          <circle cx="64" cy="12" r="2.2" />
+          <circle cx="78" cy="22" r="2.2" />
+        </g>
+      )}
+    </svg>
   );
 }
 
