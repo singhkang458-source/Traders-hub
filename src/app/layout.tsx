@@ -4,6 +4,7 @@ import { ViewTransition } from "react";
 import AuthProvider from "@/components/auth/AuthProvider";
 import BottomNav from "@/components/BottomNav";
 import RegisterServiceWorker from "@/components/RegisterServiceWorker";
+import ScrollProgress from "@/components/ScrollProgress";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { SITE_NAME } from "@/lib/sections";
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-full flex-col">
+        <ScrollProgress />
         {/* Accounts are optional: with no Supabase variables set, this
             provider stays inert and every sign-in control hides itself. */}
         <AuthProvider>

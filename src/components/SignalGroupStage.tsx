@@ -233,7 +233,6 @@ function Stage({ groups, lede }: { groups: SignalGroupView[]; lede: string }) {
 
   return (
     <div className="sg-stage">
-      <ScrollGlow />
       <section
         className={
           landing
@@ -989,24 +988,6 @@ function PriceRail({ prices, onChange }: { prices: SignalPrice[]; onChange: (pri
   );
 }
 
-function ScrollGlow() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const bar = ref.current;
-    if (!bar) return;
-    const onScroll = () => {
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = height > 0 ? window.scrollY / height : 0;
-      bar.style.transform = `scaleX(${progress})`;
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  return <div ref={ref} className="sg-progress" aria-hidden="true" />;
-}
-
-
 function JoinLink({ group }: { group: SignalGroupView }) {
   if (!group.telegramUrl) return <span className="text-sm text-muted">No Telegram link</span>;
   return (
@@ -1090,7 +1071,11 @@ function matchesQuery(group: SignalGroupView, query: string): boolean {
 }
 
 function compareGroups(a: SignalGroupView, b: SignalGroupView, sort: SortKey): number {
-  if (sort === "name") return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+  if (sort === "name") {
+    const byKey = nameKey(a.name).localeCompare(nameKey(b.name), undefined, { sensitivity: "base" });
+    if (byKey !== 0) return byKey;
+    return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+  }
   if (sort === "members") {
     const av = memberValue(a.memberCount);
     const bv = memberValue(b.memberCount);
@@ -1101,6 +1086,12 @@ function compareGroups(a: SignalGroupView, b: SignalGroupView, sort: SortKey): n
     return a.name.localeCompare(b.name);
   }
   return a.rank - b.rank || a.name.localeCompare(b.name);
+}
+
+/** A–Z uses the first letter or number, so a leading emoji does not decide the order. */
+function nameKey(name: string): string {
+  const stripped = name.replace(/^[^\p{L}\p{N}]+/u, "").trim();
+  return stripped || name;
 }
 
 function memberValue(raw: string | null): number | null {

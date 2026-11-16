@@ -3044,7 +3044,7 @@ input.signal-filter-search {
   gap: 1rem;
 }
 
-.sg-progress {
+.scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
