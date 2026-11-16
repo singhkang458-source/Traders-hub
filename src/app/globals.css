@@ -495,6 +495,346 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* Dealing desk: two houses, one spine of facts. The gold rule marks Our
+   choice. It is not a score. */
+.broker-mast-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.broker-lede {
+  max-width: 42rem;
+  margin-top: 1.25rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.broker-risk {
+  max-width: 68rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.broker-switch {
+  min-width: 0;
+}
+
+.broker-switch-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.9rem;
+  background: var(--color-surface);
+}
+
+.broker-switch-list a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  padding: 0.35rem 0.4rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--color-muted);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.broker-switch-list a:hover {
+  color: var(--color-foreground);
+}
+
+.broker-switch-list a[aria-current="page"] {
+  background: var(--color-foreground);
+  color: var(--color-background);
+  font-weight: 600;
+}
+
+.broker-switch-list a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.broker-stage {
+  margin-top: 2.5rem;
+}
+
+.broker-desk-heads {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 0.85rem;
+  align-items: stretch;
+}
+
+.broker-desk-spine {
+  display: none;
+}
+
+.broker-desk-head {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.broker-desk-head.is-choice {
+  border-top: 2px solid var(--color-gold);
+}
+
+.broker-desk-actions {
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.broker-desk-name {
+  border-radius: 0.25rem;
+}
+
+.broker-desk-name:hover {
+  color: var(--color-accent);
+}
+
+.broker-desk .btn {
+  padding-inline: 0.65rem;
+}
+
+.broker-desk-rows {
+  margin: 1.25rem 0 0;
+}
+
+.broker-desk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 0.85rem;
+  row-gap: 0.35rem;
+  margin: 0;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.broker-desk-row dt {
+  grid-column: 1 / -1;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.broker-desk-row dd {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.broker-desk-empty {
+  display: grid;
+  align-items: center;
+  border-top: 1px solid var(--color-border-strong);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.broker-desk-empty-rules {
+  display: none;
+}
+
+.broker-desk-empty-rules span {
+  display: block;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.broker-desk-empty-copy {
+  padding: 2.5rem 0;
+}
+
+.broker-desk-empty-note {
+  padding: 4rem 0;
+  color: var(--color-muted);
+}
+
+.broker-ledger {
+  margin-top: 4.5rem;
+}
+
+.broker-ledger-scroll {
+  overflow-x: auto;
+}
+
+.broker-ledger table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.broker-ledger th,
+.broker-ledger td {
+  padding: 0.95rem 1.25rem 0.95rem 0;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.broker-ledger thead th:first-child,
+.broker-ledger tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 8.5rem;
+  background: var(--color-background);
+  box-shadow: 1px 0 0 var(--color-border);
+}
+
+.broker-ledger thead th {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+.broker-ledger thead th.is-choice {
+  box-shadow: inset 0 2px 0 var(--color-gold);
+}
+
+.broker-ledger tbody th {
+  width: 8.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.broker-ledger td {
+  color: var(--color-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.broker-notes {
+  max-width: 40rem;
+  margin-top: 4.5rem;
+}
+
+@media (min-width: 48rem) {
+  .broker-mast-row {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .broker-switch {
+    width: min(100%, 28rem);
+    flex: none;
+  }
+
+  .broker-switch-list a {
+    padding-inline: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .broker-desk-heads,
+  .broker-desk-row {
+    grid-template-columns: minmax(0, 1fr) 8.5rem minmax(0, 1fr);
+    column-gap: 1.5rem;
+  }
+
+  .broker-desk-head:first-child {
+    grid-column: 1;
+  }
+
+  .broker-desk-head:nth-child(2) {
+    grid-column: 3;
+  }
+
+  .broker-desk-spine {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    width: 1px;
+    justify-self: center;
+    background: var(--color-border-strong);
+    box-shadow: inset 0 2.75rem 0 var(--color-gold);
+  }
+
+  .broker-desk-row dt {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    text-align: center;
+  }
+
+  .broker-desk-row dd:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .broker-desk-row dd:nth-of-type(2) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .broker-stage {
+    margin-top: 3.5rem;
+  }
+
+  .broker-desk-empty {
+    grid-template-columns: minmax(0, 28rem) minmax(8rem, 1fr);
+    column-gap: 2rem;
+  }
+
+  .broker-desk-empty-rules {
+    display: flex;
+    height: 11rem;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .broker-ledger table {
+    width: 32rem;
+    min-width: 32rem;
+  }
+
+  .broker-ledger thead th:first-child,
+  .broker-ledger tbody th {
+    width: 6.25rem;
+    min-width: 6.25rem;
+    max-width: 6.25rem;
+    padding-right: 0.75rem;
+  }
+
+  .broker-ledger thead th:not(:first-child),
+  .broker-ledger td {
+    width: 12.5rem;
+    min-width: 12.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .broker-switch-list a {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
