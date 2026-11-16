@@ -3,7 +3,6 @@ import ToolDirectory from "@/components/ToolDirectory";
 import { getSection } from "@/lib/sections";
 import { TOOL_CATEGORY_ORDER } from "@/lib/tool-types";
 import { tools } from "@/lib/tools";
-import PageIntro from "@/components/PageIntro";
 
 const section = getSection("tools");
 
@@ -31,36 +30,49 @@ export default function ToolsPage() {
   const categoryCount = TOOL_CATEGORY_ORDER.filter((id) => tools.some((tool) => tool.category === id)).length;
 
   return (
-    <>
-      <PageIntro eyebrow="Trading tools" title={<>{section.title}</>} lede={<>Compare charting, indicators, backtesting, scanners, automation, trade copiers and VPS hosts side by side.</>} />
-
-      <dl className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
-        <Fact value={String(tools.length)} label="Tools listed" />
-        <Fact value={String(categoryCount)} label="Categories" />
-        <Fact value="Not scored" label="Trading results" />
-      </dl>
-
-      <p className="meta mt-4 max-w-2xl">
-        Descriptions are in our own words. Prices are copied from each provider&apos;s site on the date
-        in that listing, and a blank price means we could not confirm one. Fees change, and taxes may
-        be added at checkout.
-      </p>
+    <div className="rack-page">
+      <header className="rack-mast">
+        <p className="eyebrow">Trading tools</p>
+        <h1 className="page-title mt-2">{section.title}</h1>
+        <p className="rack-lede">
+          Compare charting, indicators, backtesting, scanners, automation, trade copiers and VPS hosts side by side.
+        </p>
+        <dl className="rack-status">
+          <div>
+            <dt>Tools listed</dt>
+            <dd>{tools.length}</dd>
+          </div>
+          <div>
+            <dt>Categories</dt>
+            <dd>{categoryCount}</dd>
+          </div>
+          <div>
+            <dt>Trading results</dt>
+            <dd>Not scored</dd>
+          </div>
+        </dl>
+        <p className="meta mt-4 max-w-2xl">
+          Descriptions are in our own words. Prices are copied from each provider&apos;s site on the date
+          in that listing, and a blank price means we could not confirm one. Fees change, and taxes may
+          be added at checkout.
+        </p>
+      </header>
 
       <div className="mt-8">
         <ToolDirectory tools={tools} />
       </div>
 
-      <section aria-labelledby="tool-faq-heading" className="mt-14 max-w-2xl border-t border-border pt-8">
+      <section aria-labelledby="tool-faq-heading" className="rack-faq">
         <h2 id="tool-faq-heading" className="section-title">
           How to read this page
         </h2>
-        <div className="mt-4 divide-y divide-border">
+        <div className="mt-4">
           {faqs.map((item) => (
-            <details key={item.q} className="group py-3">
-              <summary className="cursor-pointer list-none font-medium text-foreground [&::-webkit-details-marker]:hidden">
-                <span className="flex items-center justify-between gap-4">
+            <details key={item.q} className="group border-t border-border py-3 last:border-b">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center font-medium text-foreground [&::-webkit-details-marker]:hidden">
+                <span className="flex w-full items-center justify-between gap-4">
                   {item.q}
-                  <span aria-hidden="true" className="text-muted transition-transform duration-200 group-open:rotate-45">
+                  <span aria-hidden="true" className="rack-faq-mark text-muted">
                     +
                   </span>
                 </span>
@@ -70,15 +82,6 @@ export default function ToolsPage() {
           ))}
         </div>
       </section>
-    </>
-  );
-}
-
-function Fact({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="bg-surface px-4 py-3">
-      <dt className="eyebrow">{label}</dt>
-      <dd className="mt-1 text-lg font-semibold tracking-tight text-foreground">{value}</dd>
     </div>
   );
 }
