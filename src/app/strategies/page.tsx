@@ -2,13 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSection } from "@/lib/sections";
 import { strategies, strategiesInDisplayOrder } from "@/lib/strategies";
-import { STRATEGY_CATEGORY_ICONS } from "@/lib/strategy-types";
 import StrategyDirectory from "@/components/StrategyDirectory";
-import TerminalStatPanel from "@/components/TerminalStatPanel";
-import IconPatternBackdrop from "@/components/IconPatternBackdrop";
-import { PlayIcon, CheckIcon } from "@/components/icons";
 import { ProgressSummary } from "@/components/ProgressBits";
-import PageIntro from "@/components/PageIntro";
 
 const section = getSection("strategies");
 
@@ -20,50 +15,54 @@ export default function StrategiesPage() {
   const advancedCount = strategies.filter((s) => s.tier === "advanced").length;
 
   return (
-    <div>
-      <PageIntro
-        size="lg"
-        eyebrow={section.title}
-        title={
-          <>Learn a strategy, then{" "}
-            <span className="brand-wordmark" style={{ fontFamily: "var(--font-heading)" }}>
-              prove
-            </span>{" "}
-            you&apos;ve got it</>
-        }
-        lede={<>{strategies.length} trading strategies explained in plain English — what each one is,
-            how it&apos;s traditionally traded, and a live chart you can click on, right on the
-            page. Never a claim that any of them will make you money.</>}
-        aside={
-          <TerminalStatPanel
-          caption="The library, by tier"
-          backdrop={<IconPatternBackdrop icons={Object.values(STRATEGY_CATEGORY_ICONS)} />}
-          stats={[
-            { label: "Free", value: freeCount },
-            { label: "Intermediate", value: intermediateCount },
-            { label: "Advanced", value: advancedCount },
-            { label: "With a live quiz", value: strategies.length },
-          ]}
-          footnote="Every strategy has a live simulator — shuffle the chart, test yourself, no account needed."
-        />
-        }
-      >
-        <div className="flex flex-wrap items-center gap-3">
-            <a href="#browse" className="btn btn-primary">
-              <PlayIcon className="size-4" />
-              Browse all strategies
-            </a>
-            <Link href="/disclaimer" className="btn btn-outline">
-              Read the disclaimer
-            </Link>
-          </div>
-      </PageIntro>
+    <div className="plot-page">
+      <header className="plot-mast">
+        <p className="eyebrow">{section.title}</p>
+        <h1 className="page-title mt-2 max-w-3xl">
+          Learn a strategy, then <span className="plot-emphasis">prove</span> you&apos;ve got it
+        </h1>
+        <p className="plot-lede">
+          {strategies.length} trading strategies explained in plain English — what each one is,
+          how it&apos;s traditionally traded, and a live chart you can click on, right on the
+          page. Never a claim that any of them will make you money.
+        </p>
+        <ul className="plot-legend">
+          <li>
+            <span className="plot-swatch" aria-hidden="true" />
+            <span>Free</span>
+            <strong>{freeCount}</strong>
+          </li>
+          <li>
+            <span className="plot-swatch" aria-hidden="true" />
+            <span>Intermediate</span>
+            <strong>{intermediateCount}</strong>
+          </li>
+          <li>
+            <span className="plot-swatch" aria-hidden="true" />
+            <span>Advanced</span>
+            <strong>{advancedCount}</strong>
+          </li>
+          <li>
+            <span className="plot-swatch" aria-hidden="true" />
+            <span>With a live quiz</span>
+            <strong>{strategies.length}</strong>
+          </li>
+        </ul>
+        <p className="plot-footnote">
+          Every strategy has a live simulator — shuffle the chart, test yourself, no account needed.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <a href="#browse" className="btn btn-primary">
+            Browse all strategies
+          </a>
+          <Link href="/disclaimer" className="btn btn-outline">
+            Read the disclaimer
+          </Link>
+        </div>
+      </header>
 
-      <div id="browse" className="mt-6 scroll-mt-20 border-t border-border pt-10">
-        <h2 className="section-title flex items-center gap-2 text-2xl">
-          <CheckIcon className="size-5 text-accent" />
-          Browse the library
-        </h2>
+      <div id="browse" className="plot-browse">
+        <h2 className="section-title text-2xl">Browse the library</h2>
         <p className="meta mt-1.5 max-w-2xl">
           Educational write-ups only, never financial advice. The free tier is open to everyone;
           the rest is open too while we finish building the paid library — see the{" "}

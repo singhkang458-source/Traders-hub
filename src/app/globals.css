@@ -1506,6 +1506,214 @@ body {
   }
 }
 
+/* The plot: strategies sit on a chart sheet. Each drawing is a category
+   diagram, not a price and not a result. */
+.plot-lede,
+.plot-footnote {
+  max-width: 42rem;
+  margin-top: 0.85rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.plot-footnote {
+  font-size: 0.8125rem;
+}
+
+.plot-emphasis {
+  color: var(--color-gold);
+}
+
+.plot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.5rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plot-legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+}
+
+.plot-swatch {
+  width: 1.15rem;
+  height: 2px;
+  align-self: center;
+  background: var(--color-foreground);
+}
+
+.plot-legend strong {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--color-foreground);
+}
+
+.plot-browse {
+  margin-top: 2.75rem;
+  scroll-margin-top: 5rem;
+}
+
+.plot-keys {
+  display: flex;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0 0 0.15rem;
+  overflow-x: auto;
+  list-style: none;
+}
+
+.plot-key {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 2px solid transparent;
+  padding: 0 0.7rem;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.plot-key.is-on {
+  border-bottom-color: var(--color-gold);
+  color: var(--color-foreground);
+}
+
+.plot-key:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.plot-search {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+  border: 1px solid var(--color-border-strong);
+  padding: 0 0.75rem;
+  background: var(--color-background);
+}
+
+.plot-search input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.plot-diagram-note {
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.plot-sheet {
+  display: grid;
+  margin-top: 0.35rem;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    color-mix(in srgb, var(--color-border) 75%, transparent) 32px
+  );
+}
+
+.plot-mark {
+  position: relative;
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.35rem 0.85rem;
+  align-items: start;
+  padding: 1rem 0.15rem 1.1rem;
+}
+
+.plot-trace {
+  width: 5.5rem;
+  height: 2.5rem;
+  margin-top: 0.2rem;
+  color: var(--color-muted);
+}
+
+.plot-trace path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.plot-trace circle {
+  fill: currentColor;
+}
+
+.plot-name {
+  min-width: 0;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.plot-title {
+  border-radius: 0.2rem;
+}
+
+.plot-title:hover {
+  color: var(--color-accent);
+}
+
+.plot-tier {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+}
+
+.plot-empty {
+  padding: 2.5rem 0;
+}
+
+@media (min-width: 64rem) {
+  .plot-keys {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .plot-sheet {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2.5rem;
+  }
+}
+
+@media (hover: hover) {
+  .plot-mark:hover .plot-trace {
+    color: var(--color-gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plot-trace,
+  .plot-key,
+  .plot-title {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
