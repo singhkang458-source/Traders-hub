@@ -81,14 +81,7 @@ export default function CountrySwitch({
   }, []);
 
   return (
-    <div
-      className={`country-switch mb-3 flex flex-wrap items-center gap-3 rounded-xl border p-3 transition-colors ${
-        country ? "border-accent/40 bg-accent/5" : "border-border bg-surface"
-      }`}
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent/12 text-accent">
-        <MapPin className="size-4" aria-hidden="true" />
-      </span>
+    <div className={`country-switch challenge-country mb-3 flex flex-wrap items-center gap-3 py-3 ${country ? "is-set" : ""}`}>
       {/* From sm up the picker has a fixed width and never shrinks — it used
           to collapse to ~11px beside the long sentence on wide screens. The
           sentence takes whatever room is left, and drops onto its own line
