@@ -29,8 +29,8 @@ export default function StartHerePath() {
   const next = START_HERE_TRACKED.find((s) => !done.has(`${s.progress!.kind}:${s.progress!.id}`)) ?? null;
 
   return (
-    <div className="mt-8">
-      <div className="rounded-2xl border border-border bg-surface p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
+    <div className="trail-wrap">
+      <div className="trail-now">
         <div className="min-w-0 flex-1">
           <p className="eyebrow">Your progress</p>
           <p className="mt-1 text-lg font-semibold text-foreground" aria-live="polite">
@@ -40,8 +40,8 @@ export default function StartHerePath() {
                 ? "Every tracked step is done. Nice."
                 : `${completed} of ${total} tracked steps done`}
           </p>
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed} aria-label="Start here progress">
-            <div className="path-progress h-full rounded-full bg-gold-fill" style={{ width: `${pct}%` }} />
+          <div className="mt-3 h-2 w-full overflow-hidden bg-surface-2" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed} aria-label="Start here progress">
+            <div className="path-progress h-full bg-gold-fill" style={{ width: `${pct}%` }} />
           </div>
           <p className="meta mt-2">Saved in this browser. Create a free account, or sign in, to keep it across devices.</p>
         </div>
@@ -53,77 +53,64 @@ export default function StartHerePath() {
         )}
       </div>
 
-      <ol className="path-stages mt-8 space-y-6">
+      <ol className="trail">
         {START_HERE_PATH.map((stage, i) => (
-          <Stage key={stage.id} stage={stage} index={i} done={done} last={i === START_HERE_PATH.length - 1} />
+          <Stage key={stage.id} stage={stage} index={i} done={done} />
         ))}
       </ol>
     </div>
   );
 }
 
-function Stage({ stage, index, done, last }: { stage: PathStage; index: number; done: Set<string>; last: boolean }) {
+function Stage({ stage, index, done }: { stage: PathStage; index: number; done: Set<string> }) {
   const Icon = STAGE_ICON[stage.id];
   const tracked = stage.steps.filter((s) => s.progress);
   const ticked = tracked.filter((s) => done.has(`${s.progress!.kind}:${s.progress!.id}`)).length;
   const stageDone = tracked.length > 0 && ticked === tracked.length;
 
   return (
-    <li className="relative pl-14 sm:pl-16">
-      {/* Connector line between stages */}
-      {!last && <span aria-hidden="true" className="absolute left-5 top-12 h-[calc(100%+1.5rem)] w-0.5 bg-border sm:left-6" />}
-      <span
-        aria-hidden="true"
-        className={`absolute left-0 top-0 flex size-10 items-center justify-center rounded-xl border sm:size-12 ${
-          stageDone ? "border-success/50 bg-success/12 text-success" : "border-accent/40 bg-accent/12 text-accent"
-        }`}
-      >
-        {stageDone ? <CheckIcon className="size-5" /> : <Icon className="size-5" />}
-      </span>
+    <li className={`trail-stage${stageDone ? " is-done" : ""}`}>
+      <p className="eyebrow flex items-center gap-2">
+        {stageDone ? <CheckIcon className="size-4 text-success" aria-hidden="true" /> : <Icon className="size-4 text-accent" aria-hidden="true" />}
+        {stage.eyebrow}
+      </p>
+      <h2 className="section-title mt-2 text-2xl">
+        <Link href={stage.href} className="hover:text-accent">
+          {stage.title}
+        </Link>
+      </h2>
+      <p className="mt-2 text-muted">{stage.blurb}</p>
+      {tracked.length > 0 && (
+        <p className="meta mt-2">
+          {ticked} of {tracked.length} done
+        </p>
+      )}
 
-      <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-        <p className="eyebrow">{stage.eyebrow}</p>
-        <h2 className="section-title mt-1 text-2xl">
-          <Link href={stage.href} className="hover:text-accent">
-            {stage.title}
-          </Link>
-        </h2>
-        <p className="mt-2 max-w-2xl text-muted">{stage.blurb}</p>
-        {tracked.length > 0 && (
-          <p className="meta mt-2">
-            {ticked} of {tracked.length} done
-          </p>
-        )}
-
-        <ol className="mt-4 divide-y divide-border rounded-xl border border-border">
-          {stage.steps.map((step, j) => {
-            const isDone = step.progress ? done.has(`${step.progress.kind}:${step.progress.id}`) : false;
-            return (
-              <li key={step.href}>
-                <Link href={step.href} className="group flex items-start gap-3 p-3 transition-colors hover:bg-surface-2">
-                  <span
-                    aria-hidden="true"
-                    className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border text-[0.65rem] font-bold ${
-                      isDone ? "border-success bg-success text-white" : "border-border-strong text-muted"
-                    }`}
-                  >
-                    {isDone ? <CheckIcon className="size-3.5" /> : j + 1}
+      <ol className="trail-steps">
+        {stage.steps.map((step, j) => {
+          const isDone = step.progress ? done.has(`${step.progress.kind}:${step.progress.id}`) : false;
+          return (
+            <li key={step.href}>
+              <Link href={step.href} className="trail-step">
+                <span
+                  aria-hidden="true"
+                  className={`trail-mark${isDone ? " is-done" : ""}`}
+                >
+                  {isDone ? <CheckIcon className="size-3.5" /> : j + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className={`block font-semibold ${isDone ? "text-muted line-through decoration-success/60" : "text-foreground"}`}>
+                    {step.title}
+                    {isDone && <span className="sr-only"> (done)</span>}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className={`block font-semibold ${isDone ? "text-muted line-through decoration-success/60" : "text-foreground"}`}>
-                      {step.title}
-                      {isDone && <span className="sr-only"> (done)</span>}
-                    </span>
-                    <span className="block text-xs text-muted">{step.detail}</span>
-                  </span>
-                  <ChevronRightIcon className="mt-1 size-4 shrink-0 text-subtle transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
-        <p className="meta mt-3">Stage {index + 1} of {START_HERE_PATH.length}</p>
-      </div>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted">{step.detail}</span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="meta mt-3">Stage {index + 1} of {START_HERE_PATH.length}</p>
     </li>
   );
 }
