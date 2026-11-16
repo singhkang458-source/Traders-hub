@@ -2010,6 +2010,198 @@ body {
   }
 }
 
+/* Lesson rail: nine stops down one line, then a quiet reading column.
+   The line shows where you are in the course. The article stays plain type. */
+.lesson-lede,
+.lesson-note {
+  max-width: 42rem;
+  margin-top: 0.9rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.lesson-note {
+  font-size: 0.8125rem;
+}
+
+.lesson-emphasis {
+  color: var(--color-gold);
+}
+
+.lesson-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.75rem;
+  margin: 1.4rem 0 0;
+}
+
+.lesson-facts dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.lesson-facts dd {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.lesson-rail {
+  position: relative;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-rail::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 1.3rem;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+
+.lesson-stop {
+  display: grid;
+  grid-template-columns: 2.7rem minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  padding: 0.85rem 0;
+  border-radius: 0.2rem;
+}
+
+.lesson-stop-num {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-background);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.lesson-stop:hover .lesson-stop-num,
+.lesson-stop:focus-visible .lesson-stop-num {
+  border-color: var(--color-gold);
+  color: var(--color-foreground);
+}
+
+.lesson-head {
+  margin-top: 1.25rem;
+}
+
+.lesson-layout {
+  margin-top: 2rem;
+}
+
+.lesson-toc-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.lesson-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-toc a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  border-left: 2px solid var(--color-border);
+  padding: 0.35rem 0 0.35rem 0.75rem;
+  color: var(--color-muted);
+}
+
+.lesson-toc a:hover,
+.lesson-toc a:focus-visible {
+  border-left-color: var(--color-gold);
+  color: var(--color-foreground);
+}
+
+.lesson-toc-num {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--color-subtle);
+}
+
+.lesson-read {
+  max-width: 40rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.lesson-done {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.lesson-turn {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.lesson-turn a {
+  display: block;
+  min-height: 2.75rem;
+  border-radius: 0.2rem;
+}
+
+@media (min-width: 40rem) {
+  .lesson-turn {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 64rem) {
+  .lesson-layout {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 40rem);
+    column-gap: 3rem;
+    align-items: start;
+  }
+
+  .lesson-toc {
+    position: sticky;
+    top: 6.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-stop,
+  .lesson-toc a,
+  .lesson-turn a {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
