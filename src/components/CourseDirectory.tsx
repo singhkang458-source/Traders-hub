@@ -155,8 +155,8 @@ function Directory({
   const chips = activeFilterChips(filters);
 
   return (
-    <div className={compareIds.length > 0 ? "pb-20" : ""}>
-      <label className="flex min-h-12 items-center gap-2.5 rounded-xl border border-border bg-surface px-3.5">
+    <div className={`prospectus${compareIds.length > 0 ? " pb-20" : ""}`}>
+      <label className="prospectus-search">
         <SearchIcon className="size-4.5 shrink-0 text-subtle" />
         <span className="sr-only">Search courses by name</span>
         <input
@@ -164,14 +164,14 @@ function Directory({
           value={filters.search}
           onChange={(e) => updateFilters({ search: e.target.value })}
           placeholder="Search by name — e.g. “ICT” or “price action”"
-          className="min-w-0 flex-1 bg-transparent py-3 text-base text-foreground outline-none placeholder:text-subtle"
+          className="min-w-0 flex-1 bg-transparent py-3 text-base text-foreground placeholder:text-subtle"
         />
       </label>
 
       {/* Filter bar */}
       <form
         aria-label="Filter courses"
-        className="kit-panel mt-3 grid grid-cols-2 gap-3 p-3 sm:p-4 lg:grid-cols-5"
+        className="prospectus-filters mt-4 grid grid-cols-2 gap-3 lg:grid-cols-5"
         onSubmit={(e) => e.preventDefault()}
       >
         <Select
@@ -247,22 +247,19 @@ function Directory({
       </div>
 
       {matching.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-border-strong p-10 text-center">
+        <div className="prospectus-empty">
           <p className="text-muted">No courses match these filters.</p>
           <button type="button" onClick={() => updateFilters(EMPTY_FILTERS)} className="btn btn-outline mt-4">
             Clear filters and show everything
           </button>
         </div>
       ) : (
-        <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {matching.map((entry) => (
-            <li
-              key={entry.id}
-              className={`lift-card kit-panel listing-card group flex cursor-pointer flex-col ${
-                compareIds.includes(entry.id) ? "is-selected" : ""
-              }`}
-            >
-              <div className="flex flex-1 flex-col p-5">
+        <ul className="prospectus-list">
+          {matching.map((entry) => {
+            const held = compareIds.includes(entry.id);
+            return (
+            <li key={entry.id} className={`prospectus-entry${held ? " is-held" : ""}`}>
+              <div className="prospectus-main">
                 <div className="flex items-start gap-3">
                   {entry.logo ? (
                     <div
@@ -279,33 +276,33 @@ function Directory({
                       />
                     </div>
                   ) : (
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-lg font-bold text-accent">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-lg font-bold text-foreground">
                       {entry.name.slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <h2 className="text-lg font-semibold leading-tight">
-                        <Link href={entry.href} className="card-stretch rounded-2xl">
+                      <h2 className="prospectus-title">
+                        <Link href={entry.href} className="card-stretch prospectus-name">
                           {entry.name}
                         </Link>
                       </h2>
                       {entry.affiliateLink && <OurChoiceBadge />}
                     </div>
                     {(entry.trustpilot || entry.whop) && (
-                      <div className="relative z-10 mt-1 flex flex-col gap-0.5 text-xs">
+                      <div className="relative z-10 mt-2 flex flex-col gap-0.5 text-xs">
                         {entry.trustpilot && <TrustpilotStars rating={entry.trustpilot} size="sm" />}
                         {entry.whop && <TrustpilotStars rating={entry.whop} size="sm" platform="Whop" />}
                       </div>
                     )}
                   </div>
-                  <div className="relative z-10 -mr-1.5 -mt-1.5 shrink-0">
+                  <div className="relative z-10 shrink-0">
                     <SaveButton kind="course" id={entry.id} name={entry.name} />
                   </div>
                 </div>
-
+                <span className="prospectus-rule" aria-hidden="true" />
                 {entry.listing.markets.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {entry.listing.markets.map((m) => (
                       <span key={m} className="pill">
                         {MARKET_LABELS[m]}
@@ -313,53 +310,47 @@ function Directory({
                     ))}
                   </div>
                 )}
-
-                {entry.tagline && <p className="mt-4 text-sm leading-relaxed text-muted">{entry.tagline}</p>}
-
-                <div className="mt-auto pt-5">
-                  <div className="flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
-                    <div>
-                      {entry.fromPrice && (
-                        <>
-                          <div className="eyebrow">From</div>
-                          <div className="figure-lg mt-1 text-accent">{entry.fromPrice}</div>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {entry.listing.hasFreeTier && <span className="badge badge-success">Free tier</span>}
-                      {entry.listing.hasLiveSessions && <span className="pill">Live sessions</span>}
-                    </div>
-                  </div>
-                  {entry.courseCountLabel && <p className="meta mt-2">{entry.courseCountLabel}</p>}
-
-                  <div className="relative z-10 mt-4 flex gap-2">
-                    <Link href={entry.href} className="btn btn-soft min-w-0 flex-1">
-                      {entry.courseCountLabel ? "View courses" : "View course"}
-                      <span className="sr-only"> — {entry.name}</span>
-                      <span aria-hidden="true">→</span>
-                    </Link>
-                    <button
-                      type="button"
-                      aria-pressed={compareIds.includes(entry.id)}
-                      onClick={() => toggleCompare(entry.id)}
-                      className={`btn shrink-0 px-3 ${
-                        compareIds.includes(entry.id)
-                          ? "border-accent bg-accent/12 text-foreground"
-                          : "border-border-strong text-muted hover:border-subtle hover:text-foreground"
-                      }`}
-                    >
-                      <span aria-hidden="true" className="font-mono">
-                        {compareIds.includes(entry.id) ? "✓" : "+"}
-                      </span>
-                      {compareIds.includes(entry.id) ? "Comparing" : "Compare"}
-                      <span className="sr-only"> — {entry.name}</span>
-                    </button>
-                  </div>
+                {entry.tagline && <p className="prospectus-blurb">{entry.tagline}</p>}
+                <div className="prospectus-actions relative z-10">
+                  <Link href={entry.href} className="btn btn-soft min-w-0 px-3">
+                    {entry.courseCountLabel ? "View courses" : "View course"}
+                    <span className="sr-only"> — {entry.name}</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                  <button
+                    type="button"
+                    aria-pressed={held}
+                    onClick={() => toggleCompare(entry.id)}
+                    className={`btn shrink-0 px-3 ${
+                      held
+                        ? "border-accent bg-accent/12 text-foreground"
+                        : "border-border-strong text-muted hover:border-subtle hover:text-foreground"
+                    }`}
+                  >
+                    <span aria-hidden="true" className="font-mono">
+                      {held ? "✓" : "+"}
+                    </span>
+                    {held ? "Comparing" : "Compare"}
+                    <span className="sr-only"> — {entry.name}</span>
+                  </button>
                 </div>
               </div>
+              <aside className="prospectus-margin">
+                {entry.fromPrice && (
+                  <>
+                    <div className="eyebrow">From</div>
+                    <div className="prospectus-price">{entry.fromPrice}</div>
+                  </>
+                )}
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {entry.listing.hasFreeTier && <span className="badge badge-success">Free tier</span>}
+                  {entry.listing.hasLiveSessions && <span className="pill">Live sessions</span>}
+                </div>
+                {entry.courseCountLabel && <p className="meta mt-2">{entry.courseCountLabel}</p>}
+              </aside>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
 
@@ -382,7 +373,7 @@ function Directory({
                         type="button"
                         onClick={() => toggleCompare(id)}
                         aria-label={`Remove ${e.name} from comparison`}
-                        className="text-muted hover:text-foreground"
+                        className="flex size-11 items-center justify-center text-muted hover:text-foreground"
                       >
                         ✕
                       </button>
@@ -405,7 +396,7 @@ function Directory({
                     setCompareIds([]);
                     setCompareNote("");
                   }}
-                  className="text-sm text-muted underline hover:text-foreground"
+                  className="inline-flex min-h-11 items-center text-sm text-muted underline hover:text-foreground"
                 >
                   Clear
                 </button>

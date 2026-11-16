@@ -120,6 +120,9 @@
 
 html {
   scroll-padding-top: 7.25rem;
+  /* The phone menu covers the bottom of the page. Keep a focused control
+     above it when the browser scrolls it into view. */
+  scroll-padding-bottom: calc(var(--bottom-nav-height) + 0.75rem);
 }
 
 /* Keep wide tables inside their own scroller so the page itself does not slide sideways. */
@@ -1050,6 +1053,179 @@ body {
   .challenge-slip,
   .challenge-index-row a,
   .challenge-book .seg-btn {
+    transition: none;
+  }
+}
+
+/* Prospectus: a contents page. The course name leads. Price, free tier
+   and live sessions sit in the outer margin, like notes beside the text.
+   A short rule turns gold only when that course is held for compare. */
+.prospectus-lede {
+  max-width: 42rem;
+  margin-top: 0.9rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.prospectus-emphasis {
+  color: var(--color-gold);
+}
+
+.prospectus-census {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 1.75rem 0 0;
+}
+
+.prospectus-census dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+.prospectus-census dd {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.prospectus-footnote {
+  max-width: 40rem;
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.prospectus-search {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.prospectus-search input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.prospectus-empty {
+  padding: 3rem 0;
+}
+
+.prospectus-list {
+  margin-top: 0.5rem;
+}
+
+.prospectus-entry {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.75rem 0 1.5rem;
+}
+
+.prospectus-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.prospectus-name {
+  border-radius: 0.2rem;
+}
+
+.prospectus-name:hover {
+  color: var(--color-accent);
+}
+
+.prospectus-rule {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin: 0.9rem 0 0.85rem;
+  background: var(--color-border-strong);
+}
+
+.prospectus-entry.is-held .prospectus-rule {
+  width: 4.5rem;
+  background: var(--color-gold);
+}
+
+.prospectus-blurb {
+  max-width: 40rem;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+.prospectus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.prospectus-margin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.prospectus-price {
+  margin-top: 0.15rem;
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 40rem) {
+  .prospectus-census {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .prospectus-entry {
+    grid-template-columns: minmax(0, 1fr) 13.5rem;
+    column-gap: 2.5rem;
+    align-items: start;
+  }
+
+  .prospectus-margin {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+@media (hover: hover) {
+  .prospectus-entry:hover .prospectus-rule {
+    width: 3.25rem;
+  }
+
+  .prospectus-entry.is-held:hover .prospectus-rule {
+    width: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prospectus-rule,
+  .prospectus-name,
+  .prospectus-search {
     transition: none;
   }
 }
