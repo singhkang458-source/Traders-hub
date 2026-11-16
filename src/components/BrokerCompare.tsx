@@ -19,7 +19,7 @@ export default function BrokerCompare({ brokers }: { brokers: BrokerView[] }) {
   ];
 
   return (
-    <section aria-labelledby="broker-compare-heading">
+    <section aria-labelledby="broker-compare-heading" className="broker-ledger">
       <h2 id="broker-compare-heading" className="broker-heading text-xl font-semibold tracking-tight">
         Side by side
       </h2>
@@ -27,16 +27,16 @@ export default function BrokerCompare({ brokers }: { brokers: BrokerView[] }) {
         Side by side from each listing. This is not a ranking.
       </p>
 
-      <div className="mt-8 overflow-x-auto">
-        <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+      <div className="broker-ledger-scroll mt-8">
+        <table>
           <caption className="sr-only">{brokers.map((broker) => broker.name).join(" and ")} compared from their listings</caption>
           <thead>
-            <tr className="border-b border-border">
-                <th scope="col" className="sticky left-0 z-10 bg-background py-4 pr-4 font-medium text-subtle">
+            <tr>
+              <th scope="col">
                 <span className="sr-only">Field</span>
               </th>
               {brokers.map((broker) => (
-                <th key={broker.id} scope="col" className="broker-heading min-w-52 py-4 pr-6 text-base font-semibold text-foreground">
+                <th key={broker.id} scope="col" className={broker.ourChoice ? "is-choice" : undefined}>
                   {broker.name}
                 </th>
               ))}
@@ -44,14 +44,10 @@ export default function BrokerCompare({ brokers }: { brokers: BrokerView[] }) {
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.label} className="border-b border-border">
-                <th scope="row" className="sticky left-0 z-10 bg-background py-4 pr-4 align-top text-[13px] font-medium text-subtle">
-                  {row.label}
-                </th>
+              <tr key={row.label}>
+                <th scope="row">{row.label}</th>
                 {row.values.map((value, index) => (
-                  <td key={`${row.label}-${brokers[index]?.id ?? index}`} className="py-4 pr-6 align-top leading-6 text-foreground">
-                    {value}
-                  </td>
+                  <td key={`${row.label}-${brokers[index]?.id ?? index}`}>{value}</td>
                 ))}
               </tr>
             ))}
