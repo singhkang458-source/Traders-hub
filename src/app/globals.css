@@ -2292,6 +2292,142 @@ body {
   }
 }
 
+/* Dictionary: a giant letter marks each group, and the alphabet stays
+   within reach. Headwords are type, not cards. */
+.dict-lede {
+  max-width: 40rem;
+  margin-top: 0.85rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+.dict {
+  margin-top: 1.75rem;
+}
+
+.dict-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0 0 0.5rem;
+}
+
+.dict-index a {
+  display: inline-flex;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.dict-index a:hover,
+.dict-index a:focus-visible {
+  border-color: var(--color-gold);
+  color: var(--color-foreground);
+}
+
+.dict-letter {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+  align-items: start;
+  padding-top: 1.75rem;
+}
+
+.dict-mark {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  scroll-margin-top: 7.25rem;
+}
+
+.dict-entry {
+  scroll-margin-top: 8.5rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.dict-entry:target {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 6px;
+}
+
+.dict-entry dt {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dict-entry dd {
+  max-width: 40rem;
+  margin: 0.35rem 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+@media (min-width: 64rem) {
+  .dict {
+    display: grid;
+    grid-template-columns: minmax(0, 46rem) auto;
+    column-gap: 2rem;
+    align-items: start;
+  }
+
+  .dict-index {
+    position: sticky;
+    top: 6.5rem;
+    order: 2;
+    flex-direction: column;
+    align-self: start;
+    width: 2.75rem;
+    max-height: calc(100vh - 8rem);
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    background: transparent;
+  }
+
+  .dict-index a {
+    width: 2.75rem;
+    min-height: 2.75rem;
+    border: 0;
+    border-right: 2px solid transparent;
+  }
+
+  .dict-index a:hover,
+  .dict-index a:focus-visible {
+    border-right-color: var(--color-gold);
+  }
+
+  .dict-mark {
+    position: sticky;
+    top: 6.5rem;
+    scroll-margin-top: 6.5rem;
+  }
+
+  .dict-entry {
+    scroll-margin-top: 6.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dict-index a,
+  .dict-entry {
+    transition: none;
+  }
+}
+
 .broker-tab-indicator {
   position: absolute;
   bottom: 0;
