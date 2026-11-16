@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/sections";
-import PageIntro from "@/components/PageIntro";
 
 export const metadata: Metadata = { title: "Privacy Policy" };
 
@@ -18,17 +17,22 @@ export const metadata: Metadata = { title: "Privacy Policy" };
 // Update this page the day any of that changes (an email tool, analytics…).
 export default function PrivacyPage() {
   return (
-    <div className="max-w-3xl">
-      <PageIntro eyebrow="Legal" title={<>Privacy Policy</>} />
-      <p className="meta mt-3">Last updated: 15 November 2026.</p>
-      <p className="mt-3 rounded-lg border border-dashed border-danger/60 px-3 py-2 text-xs text-danger">
+    <div className="folio">
+      <header className="folio-mast">
+        <p className="eyebrow">Legal</p>
+        <h1>Privacy Policy</h1>
+        <p className="meta mt-3">Last updated: 15 November 2026.</p>
+      </header>
+      <p className="folio-reminder">
         Team reminder (remove before launch): have a lawyer review this page — UAE PDPL and UK/EU GDPR
         — before the site goes fully live, and replace the placeholder contact address at the bottom.
       </p>
 
-      <div className="mt-8 space-y-8 text-muted">
-        <section>
-          <h2 className="section-title text-foreground">The short version</h2>
+      <div className="folio-read">
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">01</p>
+          <div>
+          <h2>The short version</h2>
           <p className="mt-2">
             You can use everything on {SITE_NAME} without an account and without giving us any personal
             data. If you choose to create an account, we store the minimum needed to run it: a user id,
@@ -37,10 +41,13 @@ export default function PrivacyPage() {
             payment details (see the note about Google below), we don&apos;t sell your data, and we
             don&apos;t send marketing email.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">What we collect, and when</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">02</p>
+          <div>
+          <h2>What we collect, and when</h2>
           <h3 className="mt-3 font-semibold text-foreground">Without an account</h3>
           <p className="mt-2">
             Nothing is sent to us. The site remembers a few preferences in your own browser&apos;s local
@@ -99,10 +106,13 @@ export default function PrivacyPage() {
             one (kept for an hour) that notes a password was created in this browser, so nobody else
             can set a password on your address before you confirm it.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Why we collect it, and our legal basis</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">03</p>
+          <div>
+          <h2>Why we collect it, and our legal basis</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>
               <strong className="font-semibold text-foreground">Running your account</strong> — the user
@@ -125,10 +135,13 @@ export default function PrivacyPage() {
               your account.
             </li>
           </ul>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Who else sees it</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">04</p>
+          <div>
+          <h2>Who else sees it</h2>
           <p className="mt-2">
             We don&apos;t sell, rent or trade your data to anyone. Two service providers process it on our
             behalf, only to the extent needed to do their job:
@@ -150,20 +163,26 @@ export default function PrivacyPage() {
             provider (Vercel) serves the pages and sees ordinary web server logs such as IP addresses,
             as any website host does.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">How long we keep it</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">05</p>
+          <div>
+          <h2>How long we keep it</h2>
           <p className="mt-2">
             For as long as your account exists. Delete your account (see below) and everything about you
             is removed from our database immediately — the deletion cascades through every table. If
             you simply stop using the site, we may delete accounts that have been inactive for a long
             time; we&apos;ll say so here before we start doing that.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Deleting your account</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">06</p>
+          <div>
+          <h2>Deleting your account</h2>
           <p className="mt-2">
             Open{" "}
             <Link href="/my-hub" className="text-accent hover:underline">
@@ -175,10 +194,13 @@ export default function PrivacyPage() {
             use, and your password if you set one. There&apos;s no waiting period and nothing is kept in an archive.
             Anything stored only in your browser stays until you clear that browser&apos;s site data.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Your rights</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">07</p>
+          <div>
+          <h2>Your rights</h2>
           <p className="mt-2">
             Under GDPR (and the UAE&apos;s PDPL, which gives you similar rights), you can ask us to:
           </p>
@@ -195,20 +217,26 @@ export default function PrivacyPage() {
             days. If you&apos;re not satisfied with how we&apos;ve handled your request, you also have the
             right to complain to your local data protection authority.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Children&apos;s privacy</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">08</p>
+          <div>
+          <h2>Children&apos;s privacy</h2>
           <p className="mt-2">
             {SITE_NAME} isn&apos;t directed at children, and accounts are for people aged 18 or over —
             we ask you to confirm this the first time you sign in. Choosing &ldquo;I&apos;m under 18&rdquo;
             deletes the account that was just created, email address included. If we learn an account
             belongs to someone under 18 we&apos;ll delete it.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Security</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">09</p>
+          <div>
+          <h2>Security</h2>
           <p className="mt-2">
             Your data sits in a database where every table is protected by row-level security: a
             signed-in person can read and change only their own rows, and nobody can read anyone
@@ -217,19 +245,25 @@ export default function PrivacyPage() {
             back, including by us, and we never see or log it. You can always sign in with Google or a
             one-time email link instead.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Changes to this policy</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">10</p>
+          <div>
+          <h2>Changes to this policy</h2>
           <p className="mt-2">
             If what we collect or how we use it changes — for example when we start sending alert
             emails, or add analytics — we&apos;ll update this page and change the &ldquo;last updated&rdquo;
             date at the top.
           </p>
+          </div>
         </section>
 
-        <section>
-          <h2 className="section-title text-foreground">Contact us</h2>
+        <section className="folio-article">
+          <p className="folio-num" aria-hidden="true">11</p>
+          <div>
+          <h2>Contact us</h2>
           <p className="mt-2">
             For any question about this policy, or to exercise any of the rights above, contact us at{" "}
             <a href="mailto:privacy@tradox.io" className="text-accent hover:underline">
@@ -237,6 +271,7 @@ export default function PrivacyPage() {
             </a>
             . (Placeholder address — replace with the real contact inbox before launch.)
           </p>
+          </div>
         </section>
       </div>
     </div>

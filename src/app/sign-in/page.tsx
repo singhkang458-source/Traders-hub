@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import AuthPanel from "@/components/auth/AuthPanel";
 import { SITE_NAME } from "@/lib/sections";
-import PageIntro from "@/components/PageIntro";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -14,8 +13,11 @@ export const metadata: Metadata = {
 // what an account is for.
 export default function SignInPage() {
   return (
-    <div className="mx-auto max-w-md">
-      <PageIntro eyebrow="Account" title={<>Sign in to {SITE_NAME}</>} />
+    <div className="gate-page is-narrow">
+      <header className="gate-mast">
+        <p className="eyebrow">Account</p>
+        <h1 className="gate-title">Sign in to {SITE_NAME}</h1>
+      </header>
       <AuthPanel intent="sign-in" />
     </div>
   );
