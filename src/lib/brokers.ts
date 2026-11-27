@@ -23,6 +23,8 @@ type RawFile = {
     founded?: number | null;
     headquarters?: string | null;
     min_deposit?: number | null;
+    deposit_label?: string | null;
+    spot_swap?: boolean | null;
     currency?: string | null;
     markets?: BrokerMarket[];
     regulators?: { regulator: string; country: string; entity?: string | null }[];
@@ -113,6 +115,8 @@ function buildBroker(b: RawFile["broker"]): BrokerView {
     founded: b.founded ?? null,
     headquarters: b.headquarters || null,
     minDeposit: b.min_deposit ?? null,
+    depositLabel: b.deposit_label?.trim() || null,
+    spotSwap: b.spot_swap === true,
     currency: b.currency || "USD",
     markets: b.markets ?? [],
     regulators: (b.regulators ?? []).map((r) => ({

@@ -79,6 +79,13 @@ export type BrokerView = {
   headquarters: string | null;
   /** Plain number in `currency`. Null = not stated by the broker. */
   minDeposit: number | null;
+  /**
+   * Replaces the deposit figure on cards and the detail page when there is
+   * no account deposit to show, e.g. "No account deposit".
+   */
+  depositLabel: string | null;
+  /** An instant crypto swap, not an account you fund and keep open. */
+  spotSwap: boolean;
   currency: string;
   markets: BrokerMarket[];
   regulators: BrokerRegulator[];
@@ -129,6 +136,15 @@ export function brokerOutboundUrl(broker: {
   website: string | null;
 }): string | null {
   return broker.affiliateLink ?? broker.website;
+}
+
+/** The deposit line on cards and the detail page. A written label wins over the number. */
+export function shownDeposit(broker: {
+  minDeposit: number | null;
+  currency: string;
+  depositLabel: string | null;
+}): string {
+  return broker.depositLabel ?? formatDeposit(broker.minDeposit, broker.currency) ?? "Varies";
 }
 
 /** "$0", "$2,000" — in the broker's own currency, no conversion. */

@@ -153,15 +153,18 @@ export default async function ToolPage({ params }: PageProps<"/tools/[slug]">) {
 
       <p className="meta mt-10 max-w-3xl">
         Prices, plan limits and offers change, and tax can be added at checkout. Confirm the current
-        figures on {tool.name}&apos;s own site before you subscribe. This page does not score trading
-        results.
+        figures on {tool.name}&apos;s own site{" "}
+        {tool.category === "wallets" ? "before you buy." : "before you subscribe."} This page does not
+        score trading results.
       </p>
 
       {visitHref && (
         <div className="mt-12 rounded-xl border border-border bg-surface px-6 py-8 text-center">
           <h2 className="text-xl font-semibold tracking-tight">Open the tool&apos;s own site</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-            Current pricing, trials and account signup stay on {tool.name}&apos;s website.
+            {tool.category === "wallets"
+              ? `Current prices and checkout stay on ${tool.name}'s website.`
+              : `Current pricing, trials and account signup stay on ${tool.name}'s website.`}
           </p>
           <VisitSiteLink href={visitHref} firmName={tool.name} label="Visit tool" className="mt-4" />
         </div>

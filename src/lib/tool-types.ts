@@ -9,7 +9,8 @@ export type ToolCategory =
   | "automation"
   | "vps"
   | "market-data"
-  | "copiers";
+  | "copiers"
+  | "wallets";
 
 export const TOOL_CATEGORY_LABELS: Record<ToolCategory, string> = {
   charting: "Charting",
@@ -20,6 +21,7 @@ export const TOOL_CATEGORY_LABELS: Record<ToolCategory, string> = {
   vps: "VPS Hosting",
   "market-data": "Market Data & Scanners",
   copiers: "Trade Copiers",
+  wallets: "Wallets & Security",
 };
 
 /** Order of the filter chips. "All" is added in the directory. */
@@ -32,6 +34,7 @@ export const TOOL_CATEGORY_ORDER: ToolCategory[] = [
   "vps",
   "market-data",
   "copiers",
+  "wallets",
 ];
 
 export type ToolPlan = {

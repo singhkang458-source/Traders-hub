@@ -63,6 +63,7 @@ const KNOWN_TOOL_CATEGORIES = new Set([
   "vps",
   "market-data",
   "copiers",
+  "wallets",
 ]);
 
 // Keep in sync with CourseMarket in src/lib/course-types.ts.
@@ -431,6 +432,10 @@ function checkBroker(file, data) {
   checkCurrency(file, b.currency ?? "USD");
   if (!isNumOrNull(b.min_deposit) || (isNum(b.min_deposit) && b.min_deposit < 0))
     err(file, `broker.min_deposit must be a plain number (no currency symbol) or null`);
+  if (b.deposit_label != null && typeof b.deposit_label !== "string")
+    err(file, `broker.deposit_label must be text or left out`);
+  if (b.spot_swap != null && typeof b.spot_swap !== "boolean")
+    err(file, `broker.spot_swap must be true, false, or left out`);
   checkLink(file, "broker.website", b.website);
   checkLink(file, "broker.affiliate_link", b.affiliate_link);
   checkRating(file, "broker.trustpilot", b.trustpilot);

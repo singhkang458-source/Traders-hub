@@ -1,0 +1,63 @@
+{
+  "broker": {
+    "id": "changelly",
+    "name": "Changelly",
+    "logo": "/brokers/changelly.png",
+    "logo_bg": "white",
+    "tagline": "An instant crypto exchange with fiat buy and sell through partner providers. This listing is that swap, not CFD trading.",
+    "about": "Changelly is an instant crypto exchange that has listed swaps since 2015. You exchange one coin for another, or buy and sell crypto with fiat through the providers on its marketplace. The about page says more than 1,200 cryptocurrencies are listed. The terms say the swap is carried out by a third-party exchange service, and that an account is part of using the full site. Identity checks can be requested. A separate product, Changelly PRO, is its own exchange. The visit link opens the instant swap, not that product, and this listing does not cover CFD trading. That button opens a sample swap already set to 0.1 BTC for ETH. Change the coins and the amount before you send anything.",
+    "founded": 2015,
+    "headquarters": null,
+    "min_deposit": null,
+    "deposit_label": "No account deposit",
+    "spot_swap": true,
+    "currency": "USD",
+    "markets": ["crypto"],
+    "regulators": [],
+    "regulators_note": "The company line above is the operator named on Changelly's terms and the address on the Google Play listing for its app. Those pages did not name a financial conduct licence for that company.",
+    "company_registration": "Marella LLC. Google Play lists the Changelly app developer at Euro House, Richmond Hill Road, Kingstown, Saint Vincent and the Grenadines.",
+    "platforms": ["Web", "iOS", "Android"],
+    "plans": [],
+    "costs": [
+      {
+        "title": "Exchange fees",
+        "rows": [
+          {
+            "label": "Floating-rate swap",
+            "value": "0.25% service fee",
+            "note": "Plus the blockchain network fee. The fee FAQ says both are shown in the rate before you send."
+          },
+          {
+            "label": "Fixed-rate swap",
+            "value": "Included in the quote",
+            "note": "The fee FAQ describes a fee inside the fixed quote. It does not publish one percentage for that option."
+          },
+          {
+            "label": "Selling crypto for fiat",
+            "value": "From 3.95%",
+            "note": "The fee FAQ says 3.95% is the minimum. The final fee depends on the pair, the country and the market."
+          },
+          {
+            "label": "Buying crypto with fiat",
+            "value": "Set by the fiat partner",
+            "note": "The fee FAQ says each fiat partner sets the purchase fee. There is no single number on that page."
+          }
+        ]
+      }
+    ],
+    "costs_note": "Checked against Changelly's fee FAQ and about page on 27 Nov 2026. Minimum swap size depends on the network fee and the pair, so no single minimum is listed here.",
+    "leverage": [],
+    "leverage_summary": "Not offered on the instant swap",
+    "website": "https://changelly.com/",
+    "affiliate_link": "https://changelly.com/?from=btc&to=eth&amount=0.1&ref_id=_OCR6KeqCg6F0gbW"
+  },
+  "_notes": {
+    "last_verified": "2026-11-27",
+    "affiliate_referral_id": "_OCR6KeqCg6F0gbW",
+    "sources": [
+      "https://changelly.com/about",
+      "https://changelly.com/terms-of-use",
+      "https://changelly.com/faq/changelly/fees/"
+    ]
+  }
+}
