@@ -33,7 +33,7 @@ export default function ToolsPage() {
     <>
       <h1 className="title-rule page-title">{section.title}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted">
-        Compare charting, indicators, backtesting, scanners, automation, trade copiers and VPS hosts side by side.
+        Compare charting, indicators, backtesting, scanners, automation, trade copiers, VPS hosts and hardware wallets side by side.
       </p>
 
       <dl className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">

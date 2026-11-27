@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Where does Visit broker go?",
-    a: "For now it opens the broker's official homepage. If an affiliate link is added later, it lives in one field on that broker's listing and the button uses it automatically. The footer explains when a link may earn us a commission.",
+    a: "It opens that broker's affiliate link when the listing has one, and the broker's own site when it does not. We may earn a commission on an affiliate link. The footer says the same.",
   },
 ];
 
@@ -32,7 +32,7 @@ export default function BrokersPage() {
     <>
       <h1 className="title-rule page-title">{section.title}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted">
-        Compare retail brokers on deposit, leverage, platforms and who regulates them.
+        Compare retail brokers on deposit, leverage, platforms and who regulates them. Instant crypto swaps are in this list too. They are not CFD accounts.
       </p>
 
       <dl className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">

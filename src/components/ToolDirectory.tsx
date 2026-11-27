@@ -81,7 +81,7 @@ function Directory({ tools, initialQuery }: { tools: ToolView[]; initialQuery: s
         />
       </label>
 
-      <div className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Tool categories">
+      <div className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible" role="tablist" aria-label="Tool categories">
         <CategoryChip
           label="All"
           count={tools.length}

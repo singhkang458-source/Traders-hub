@@ -11,7 +11,7 @@ import StickyVisitBar from "@/components/StickyVisitBar";
 import TrustpilotStars from "@/components/TrustpilotStars";
 import VisitSiteLink from "@/components/VisitSiteLink";
 import { InfoIcon, LayersIcon, MonitorIcon, ShieldIcon, TagIcon } from "@/components/icons";
-import { BROKER_MARKET_LABELS, brokerOutboundUrl, formatDeposit, type CostRow } from "@/lib/broker-types";
+import { BROKER_MARKET_LABELS, brokerOutboundUrl, shownDeposit, type CostRow } from "@/lib/broker-types";
 import { brokers, getBroker } from "@/lib/brokers";
 import { leverageLabel } from "@/lib/broker-filters";
 
@@ -79,7 +79,7 @@ export default async function BrokerPage({ params }: PageProps<"/brokers/[id]">)
   if (!broker) notFound();
 
   const visitHref = brokerOutboundUrl(broker);
-  const deposit = formatDeposit(broker.minDeposit, broker.currency);
+  const deposit = shownDeposit(broker);
 
   const jumps = [
     broker.about ? ["about-heading", "About"] : null,
@@ -127,7 +127,7 @@ export default async function BrokerPage({ params }: PageProps<"/brokers/[id]">)
         </div>
 
         <dl className="grid grid-cols-2 gap-px border-t border-border bg-border sm:grid-cols-4">
-          <Stat label="Min. deposit" value={deposit ?? "Varies"} />
+          <Stat label="Min. deposit" value={deposit} />
           <Stat label="Leverage" value={leverageLabel(broker)} />
           <Stat label="Regulators" value={broker.regulators.length ? String(broker.regulators.length) : "None listed"} />
           <Stat
@@ -344,15 +344,17 @@ export default async function BrokerPage({ params }: PageProps<"/brokers/[id]">)
 
       <p className="meta mt-10 max-w-3xl">
         Fees, leverage and offers change often and can depend on where you live. We last checked these
-        figures against the broker&apos;s own pages and the notes in its data file. Confirm them there
-        before you open an account.
+        figures against the broker&apos;s own pages and the notes in its data file.{" "}
+        {broker.spotSwap ? "Confirm them there before you send any crypto." : "Confirm them there before you open an account."}
       </p>
 
       {visitHref && (
         <div className="mt-12 rounded-xl border border-border bg-surface px-6 py-8 text-center">
           <h2 className="text-xl font-semibold tracking-tight">Open the broker&apos;s own site</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-            Full terms, current pricing and account opening stay on {broker.name}&apos;s website.
+            {broker.spotSwap
+              ? `The swap stays on ${broker.name}'s website.`
+              : `Full terms, current pricing and account opening stay on ${broker.name}'s website.`}
           </p>
           <VisitSiteLink href={visitHref} firmName={broker.name} label="Visit broker" className="mt-4" />
         </div>
@@ -362,7 +364,7 @@ export default async function BrokerPage({ params }: PageProps<"/brokers/[id]">)
         courseName={broker.name}
         logo={broker.logo}
         logoBg={broker.logoBg}
-        price={deposit ? `Min. deposit ${deposit}` : "Min. deposit varies"}
+        price={broker.depositLabel ?? (broker.minDeposit != null ? `Min. deposit ${deposit}` : "Min. deposit varies")}
         visitHref={visitHref}
         visitLabel="Visit broker"
         wideLogo

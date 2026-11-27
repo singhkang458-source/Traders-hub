@@ -8,7 +8,7 @@ import OurChoiceBadge from "@/components/OurChoiceBadge";
 import TrustpilotStars from "@/components/TrustpilotStars";
 import {
   BROKER_MARKET_LABELS,
-  formatDeposit,
+  shownDeposit,
   type BrokerView,
 } from "@/lib/broker-types";
 import {
@@ -260,7 +260,7 @@ function BrokerCard({
   listingQuery: string;
   onToggleCompare: () => void;
 }) {
-  const deposit = formatDeposit(broker.minDeposit, broker.currency);
+  const deposit = shownDeposit(broker);
 
   return (
     <li
@@ -290,7 +290,7 @@ function BrokerCard({
       <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-3">
         <div>
           <dt className="eyebrow">Min. deposit</dt>
-          <dd className="mt-1 text-sm font-semibold tabular-nums text-foreground">{deposit ?? "Varies"}</dd>
+          <dd className="mt-1 text-sm font-semibold text-foreground">{deposit}</dd>
         </div>
         <div>
           <dt className="eyebrow">Leverage</dt>
@@ -393,7 +393,7 @@ function ComparePanel({
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              <CompareRow label="Min. deposit" values={brokers.map((b) => formatDeposit(b.minDeposit, b.currency) ?? "Varies")} />
+              <CompareRow label="Min. deposit" values={brokers.map((b) => shownDeposit(b))} />
               <CompareRow label="Leverage" values={brokers.map((b) => leverageLabel(b))} />
               <CompareRow
                 label="Regulators"

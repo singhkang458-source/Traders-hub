@@ -1,0 +1,58 @@
+{
+  "broker": {
+    "id": "changenow",
+    "name": "ChangeNOW",
+    "logo": "/brokers/changenow.png",
+    "logo_bg": "dark",
+    "tagline": "A crypto-to-crypto swap on the website does not ask you to log in. It does not offer CFD trading.",
+    "about": "ChangeNOW is an instant crypto exchange run by CHN Group LLC in Kingstown, Saint Vincent and the Grenadines. It has offered swaps since 2017. You choose two coins, send from your own wallet to a one-time address, and the other coin is sent to a wallet you name. The terms describe this as non-custodial and say you do not keep a balance there. They also say that in limited cases ChangeNOW may hold unclaimed coins, for up to one year. Its about page lists more than 1,000 crypto assets. A fixed-rate option keeps the quote shown when the swap starts. A floating rate can finish higher or lower than that estimate. The terms say a swap on the website does not need a login, except that people in the United States use it after creating an account. People in some countries, including the UAE, must pass an identity check before a swap. This listing is the swap, not a CFD account.",
+    "founded": 2017,
+    "headquarters": "Kingstown, Saint Vincent and the Grenadines",
+    "min_deposit": null,
+    "deposit_label": "No account deposit",
+    "spot_swap": true,
+    "currency": "USD",
+    "markets": ["crypto"],
+    "regulators": [],
+    "regulators_note": "The company line above is the registration on ChangeNOW's about page. CHN Group LLC's terms do not name a conduct licence for that company. They say users in the Kyrgyz Republic may be served through CJSC AimTech, which the terms describe as a licensed virtual asset service provider. We have not checked that licence on a public register.",
+    "company_registration": "CHN Group LLC, company no. 3010 LLC 2023, Euro House, Richmond Hill Road, Kingstown, Saint Vincent and the Grenadines.",
+    "platforms": ["Web", "iOS", "Android"],
+    "plans": [],
+    "costs": [
+      {
+        "title": "Crypto-to-crypto swap",
+        "rows": [
+          {
+            "label": "Service fee",
+            "value": "Included in the quote",
+            "note": "The fee FAQ says the service fee depends on the pair and is already in the estimate. It does not publish one percentage for every pair."
+          },
+          {
+            "label": "Network fee",
+            "value": "Set by the blockchain",
+            "note": "You pay your wallet's network fee when you send the coins. The estimate includes the network fee for the coins sent back to you."
+          },
+          {
+            "label": "Smallest swap",
+            "value": "$2",
+            "note": "The about page lists a $2 minimum for a crypto-to-crypto exchange. That is a swap size, not an account deposit."
+          }
+        ]
+      }
+    ],
+    "costs_note": "Checked against ChangeNOW's about page and fee FAQ on 27 Nov 2026. The amount you receive still depends on the pair, the rate type and network traffic.",
+    "leverage": [],
+    "leverage_summary": "Not offered",
+    "website": "https://changenow.io/",
+    "affiliate_link": "https://changenow.app.link/referral?link_id=55c0f2642d4f19"
+  },
+  "_notes": {
+    "last_verified": "2026-11-27",
+    "affiliate_partner_id": "55c0f2642d4f19",
+    "sources": [
+      "https://changenow.io/about",
+      "https://changenow.io/terms-of-use/changenow-terms",
+      "https://changenow.io/faq/what-fees-are-there-during-an-exchange"
+    ]
+  }
+}

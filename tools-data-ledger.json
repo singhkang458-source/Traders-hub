@@ -1,0 +1,60 @@
+{
+  "tool": {
+    "slug": "ledger",
+    "name": "Ledger",
+    "category": "wallets",
+    "priority": 100,
+    "description": "Ledger makes hardware wallets that keep crypto private keys on the device rather than on an exchange. Ledger SAS is in Paris and started this work in 2014. The shop sells the Nano S Plus, Nano X, Nano Gen5, Flex and Stax. You review a transaction on the device before it is signed. Losing the recovery phrase can lock you out of the coins, and a hardware wallet does not remove the risk of the coins themselves falling in price.",
+    "features": [
+      "Private keys stay on the hardware device. The Flex and Stax product pages name a Secure Element chip.",
+      "Ledger Wallet, the companion app, is used to view balances and prepare transactions on desktop and mobile.",
+      "Nano S Plus is cable only, and the shop says it has no iOS support. Nano X adds Bluetooth and a battery.",
+      "Flex has a 2.8 inch touchscreen. Stax has a 3.7 inch curved screen. Nano Gen5 has a 2.8 inch screen."
+    ],
+    "plans": [
+      {
+        "name": "Ledger Nano S Plus",
+        "price": "$62 one-time",
+        "detail": "USD on the shop product page. Cable only. The shop says this model has no iOS support."
+      },
+      {
+        "name": "Ledger Nano X",
+        "price": "$79 one-time",
+        "detail": "USD on the shop product page. The shop describes Bluetooth and a battery."
+      },
+      {
+        "name": "Ledger Nano Gen5",
+        "price": "$179 one-time",
+        "detail": "USD on the shop product page. The shop describes a 2.8 inch screen."
+      },
+      {
+        "name": "Ledger Flex",
+        "price": "$249 one-time",
+        "detail": "USD on the shop product page. The shop describes a 2.8 inch Gorilla Glass touchscreen."
+      },
+      {
+        "name": "Ledger Stax",
+        "price": "$399 one-time",
+        "detail": "USD on the shop product page. The shop describes a 3.7 inch curved screen."
+      }
+    ],
+    "platforms": ["Desktop", "Android", "iOS"],
+    "website": "https://www.ledger.com/",
+    "pricing_note": "USD prices on the official shop product pages on 27 Nov 2026. Tax can be added at checkout. The shop also says some payments are processed in euros, so a price in another currency can differ.",
+    "affiliate_link": "https://shop.ledger.com/?r=b14cea9a2639",
+    "logo": "/tools/ledger.png"
+  },
+  "_notes": {
+    "last_verified": "2026-11-27",
+    "affiliate_id": "b14cea9a2639",
+    "pricing_source": "https://shop.ledger.com/products/ledger-nano-s-plus",
+    "sources": [
+      "https://www.ledger.com/the-company",
+      "https://shop.ledger.com/products/ledger-nano-s-plus",
+      "https://shop.ledger.com/products/ledger-nano-x",
+      "https://shop.ledger.com/products/ledger-nano-gen5",
+      "https://shop.ledger.com/products/ledger-flex",
+      "https://shop.ledger.com/products/ledger-stax"
+    ]
+  }
+}

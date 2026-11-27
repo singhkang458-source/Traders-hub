@@ -38,14 +38,14 @@ export const sections: Section[] = [
     slug: "brokers",
     title: "Brokers",
     summary:
-      "Retail brokers for trading your own capital, filterable by regulatory status, minimum deposit and supported platforms.",
+      "Retail brokers for trading your own capital, plus instant crypto swaps that are not CFD accounts. Filter by regulatory status, minimum deposit and supported platforms.",
     status: "live",
   },
   {
     slug: "tools",
     title: "Tools",
     summary:
-      "Charting, indicators, backtesting, scanners, automation, trade copiers and trading VPS hosting, with prices copied from each tool's own site when we could confirm them.",
+      "Charting, indicators, backtesting, scanners, automation, trade copiers, trading VPS hosting and hardware wallets, with prices copied from each tool's own site when we could confirm them.",
     status: "live",
   },
   {
